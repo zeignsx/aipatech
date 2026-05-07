@@ -145,3 +145,8 @@
   100% { background-position: 200% 0; }
 }
 .animate-float { animation: float 6s ease-in-out infinite; }
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.3333%); }
+}
