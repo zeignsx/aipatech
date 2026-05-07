@@ -253,31 +253,7 @@ function Home() {
       {/* IMAGE MOSAIC + INTRO */}
       <section className="container-x py-24">
         <div className="grid items-center gap-10 lg:grid-cols-2">
-          <div className="relative grid grid-cols-6 grid-rows-6 gap-3 h-[520px]">
-            <div className="col-span-4 row-span-4 overflow-hidden rounded-3xl shadow-card">
-              <img src={refinery} alt="Nigerian refinery flare stacks at dusk" loading="lazy" className="h-full w-full object-cover" />
-            </div>
-            <div className="col-span-2 row-span-3 overflow-hidden rounded-3xl shadow-card">
-              <img src={pipes} alt="Crude oil pipeline valves" loading="lazy" className="h-full w-full object-cover" />
-            </div>
-            <div className="col-span-2 row-span-3 overflow-hidden rounded-3xl shadow-card">
-              <img src={fpso} alt="FPSO vessel offshore Nigeria" loading="lazy" className="h-full w-full object-cover" />
-            </div>
-            <div className="col-span-4 row-span-2 overflow-hidden rounded-3xl shadow-card">
-              <img src={lng} alt="LNG storage and pipelines" loading="lazy" className="h-full w-full object-cover" />
-            </div>
-            <div className="glass-strong absolute -bottom-6 -left-6 hidden rounded-2xl p-4 shadow-glow sm:block">
-              <div className="flex items-center gap-3">
-                <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-emerald text-emerald-foreground">
-                  <Flame className="h-5 w-5" />
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground">Niger Delta</div>
-                  <div className="text-sm font-semibold">Onshore & Offshore Operations</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <MosaicGallery />
 
           <div>
             <div className="text-xs font-semibold uppercase tracking-widest text-emerald">Who we are</div>
