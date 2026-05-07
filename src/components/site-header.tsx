@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
 import { Menu, X, Flame } from "lucide-react";
+import { ThemeToggle } from "./theme-toggle";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -18,7 +19,7 @@ export function SiteHeader() {
   const path = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-border/40 bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/40">
       <div className="container-x flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2 font-display font-bold">
           <span className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-hero text-primary-foreground shadow-soft">
@@ -47,6 +48,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden lg:block">
+          <span className="mr-2 inline-block align-middle"><ThemeToggle /></span>
           <Link
             to="/dashboard"
             className="mr-2 inline-flex items-center rounded-full border border-border px-4 py-2 text-sm font-semibold text-foreground hover:bg-muted"
@@ -61,13 +63,16 @@ export function SiteHeader() {
           </Link>
         </div>
 
-        <button
-          aria-label="Menu"
-          onClick={() => setOpen(!open)}
-          className="rounded-md p-2 lg:hidden"
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          <ThemeToggle />
+          <button
+            aria-label="Menu"
+            onClick={() => setOpen(!open)}
+            className="rounded-md p-2"
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {open && (
