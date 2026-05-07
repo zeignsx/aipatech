@@ -12,7 +12,12 @@ import {
   Flame,
   Anchor,
   Gauge,
+  PlayCircle,
+  Sparkles,
+  TrendingUp,
+  CheckCircle2,
 } from "lucide-react";
+import heroImg from "@/assets/hero-cinematic.jpg";
 import rig from "@/assets/ng-offshore-rig.jpg";
 import refinery from "@/assets/ng-refinery.jpg";
 import engineers from "@/assets/ng-engineers.jpg";
@@ -58,61 +63,189 @@ function Home() {
         <div className="absolute bottom-0 left-1/3 h-[420px] w-[420px] rounded-full bg-primary/30 blur-[160px] dark:bg-primary/25" />
       </div>
 
-      {/* HERO */}
-      <section className="relative">
-        <div className="absolute inset-0 -z-10">
-          <img
-            src={rig}
-            alt="Offshore oil rig in the Niger Delta at sunset"
-            width={1920}
-            height={1080}
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/55 to-background/85 dark:from-background/55 dark:via-background/65 dark:to-background/90" />
-        </div>
+      {/* HERO — split cinematic */}
+      <section className="relative pt-10 pb-20 lg:pt-16">
+        {/* Animated grid background */}
+        <div aria-hidden className="absolute inset-0 -z-10 [background-image:linear-gradient(to_right,color-mix(in_oklab,var(--foreground)_5%,transparent)_1px,transparent_1px),linear-gradient(to_bottom,color-mix(in_oklab,var(--foreground)_5%,transparent)_1px,transparent_1px)] [background-size:48px_48px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_75%)]" />
 
-        <div className="container-x relative grid min-h-[92vh] items-center py-24">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="glass-strong max-w-3xl rounded-3xl p-8 shadow-card sm:p-12"
-          >
-            <span className="inline-flex items-center gap-2 rounded-full border border-emerald/30 bg-emerald/10 px-3 py-1 text-xs font-medium text-emerald">
-              <span className="h-2 w-2 rounded-full bg-gold" /> Indigenous Nigerian Oil & Gas Excellence
-            </span>
-            <h1 className="mt-6 text-4xl font-extrabold leading-[1.05] text-foreground sm:text-6xl lg:text-7xl">
-              Engineering the future of{" "}
-              <span className="bg-gradient-gold bg-clip-text text-transparent">Africa's energy</span>.
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-              AIPATECH Energy Limited delivers integrated engineering, manufacturing, integrity and waste management services to the Nigerian and West African oil & gas sector.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+        <div className="container-x grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
+          {/* LEFT — copy */}
+          <div className="lg:col-span-6">
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 rounded-full border border-emerald/30 bg-emerald/10 px-3 py-1.5 text-xs font-semibold text-emerald backdrop-blur"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>Indigenous Nigerian Energy Engineering</span>
+              <span className="ml-1 rounded-full bg-emerald/20 px-2 py-0.5 text-[10px]">EST. 2019</span>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.05 }}
+              className="mt-6 font-display text-5xl font-extrabold leading-[0.95] tracking-tight text-foreground sm:text-6xl lg:text-7xl xl:text-[88px]"
+            >
+              Powering{" "}
+              <span className="relative inline-block">
+                <span className="relative z-10 bg-gradient-gold bg-clip-text text-transparent">Africa's</span>
+                <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-3 w-full rounded-full bg-gold/30 blur-sm" />
+              </span>{" "}
+              energy{" "}
+              <span className="bg-gradient-emerald bg-clip-text text-transparent">future</span>.
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground"
+            >
+              From the swamps of the Niger Delta to deepwater Bonny — AEL delivers integrated engineering, fabrication, integrity and waste management for the West African oil & gas sector.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.25 }}
+              className="mt-8 flex flex-wrap items-center gap-3"
+            >
               <Link
                 to="/services"
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-gold px-6 py-3 font-semibold text-gold-foreground shadow-glow transition-transform hover:scale-105"
+                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-gradient-gold px-7 py-3.5 font-semibold text-gold-foreground shadow-glow transition-transform hover:scale-[1.03]"
               >
-                Explore Services <ArrowRight className="h-4 w-4" />
+                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                <span className="relative">Explore Services</span>
+                <ArrowRight className="relative h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
-                to="/contact"
-                className="glass inline-flex items-center gap-2 rounded-full px-6 py-3 font-semibold text-foreground transition-colors hover:bg-foreground/5"
+                to="/projects"
+                className="glass inline-flex items-center gap-2 rounded-full px-6 py-3.5 font-semibold text-foreground transition-colors hover:bg-foreground/5"
               >
-                Request a Quote
+                <PlayCircle className="h-5 w-5 text-emerald" />
+                See our work
               </Link>
-            </div>
+            </motion.div>
 
-            {/* Floating mini-stats */}
-            <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              {STATS.map((s) => (
-                <div key={s.l} className="glass rounded-2xl p-3 text-center">
-                  <div className="text-xl font-extrabold text-gradient sm:text-2xl">{s.v}</div>
-                  <div className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">{s.l}</div>
+            {/* trust row */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs text-muted-foreground"
+            >
+              {["NUPRC compliant", "ISO 9001 aligned", "Local content certified", "Zero-harm HSE"].map((t) => (
+                <div key={t} className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald" />
+                  <span className="font-medium">{t}</span>
                 </div>
               ))}
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
+
+          {/* RIGHT — image stack */}
+          <div className="relative lg:col-span-6">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              className="relative"
+            >
+              {/* glow rings */}
+              <div aria-hidden className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-gradient-to-tr from-emerald/30 via-primary/20 to-gold/30 opacity-70 blur-2xl" />
+
+              {/* main image */}
+              <div className="relative overflow-hidden rounded-[2rem] border border-white/10 shadow-card">
+                <img
+                  src={heroImg}
+                  alt="Offshore oil rig at sunset"
+                  width={1920}
+                  height={1280}
+                  className="aspect-[4/5] w-full object-cover sm:aspect-[5/4] lg:aspect-[4/5]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
+
+                {/* live operations chip */}
+                <div className="glass-dark absolute left-5 top-5 flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold text-white">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald" />
+                  </span>
+                  Live Operations · Niger Delta
+                </div>
+
+                {/* bottom info card */}
+                <div className="glass-strong absolute bottom-5 left-5 right-5 rounded-2xl p-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Active Project</div>
+                      <div className="mt-0.5 text-sm font-bold">FPSO Integrity Campaign — OML 130</div>
+                    </div>
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-emerald text-emerald-foreground">
+                      <Anchor className="h-5 w-5" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* floating stat card top-right */}
+              <motion.div
+                initial={{ opacity: 0, x: 20, y: -10 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.5 }}
+                className="glass-strong absolute -right-4 top-12 hidden w-48 rounded-2xl p-4 shadow-glow sm:block lg:-right-8"
+              >
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <TrendingUp className="h-4 w-4 text-emerald" /> Uptime YTD
+                </div>
+                <div className="mt-1 text-3xl font-extrabold text-gradient">99.7%</div>
+                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                  <div className="h-full w-[97%] rounded-full bg-gradient-emerald" />
+                </div>
+              </motion.div>
+
+              {/* floating badge bottom-left */}
+              <motion.div
+                initial={{ opacity: 0, x: -20, y: 10 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.55 }}
+                className="glass-strong absolute -left-4 bottom-24 hidden items-center gap-3 rounded-2xl p-3 pr-5 shadow-glow sm:flex lg:-left-8"
+              >
+                <div className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-gold text-gold-foreground">
+                  <Flame className="h-6 w-6" />
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">5+ years</div>
+                  <div className="text-sm font-bold">Field-proven</div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* STATS strip */}
+        <div className="container-x mt-16">
+          <div className="glass-strong grid grid-cols-2 divide-y divide-border rounded-3xl shadow-card sm:grid-cols-4 sm:divide-x sm:divide-y-0">
+            {STATS.map((s) => (
+              <div key={s.l} className="p-6 text-center">
+                <div className="text-3xl font-extrabold text-gradient sm:text-4xl">{s.v}</div>
+                <div className="mt-2 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">{s.l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* marquee ticker */}
+        <div className="mt-14 overflow-hidden border-y border-border/60 bg-secondary/30 py-4">
+          <div className="flex animate-[marquee_40s_linear_infinite] gap-12 whitespace-nowrap">
+            {[...CLIENTS, ...CLIENTS, ...CLIENTS].map((c, i) => (
+              <span key={i} className="font-display text-2xl font-bold text-muted-foreground/60">
+                {c} <span className="mx-6 text-emerald">◆</span>
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -213,21 +346,8 @@ function Home() {
         </div>
       </section>
 
-      {/* CLIENTS */}
-      <section className="container-x py-20">
-        <div className="glass-strong rounded-3xl p-10">
-          <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            Trusted by industry leaders
-          </p>
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
-            {CLIENTS.map((c) => (
-              <div key={c} className="glass grid h-16 place-items-center rounded-xl font-display font-bold tracking-tight text-foreground/70 transition-colors hover:text-primary">
-                {c}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* keep rig import used */}
+      <div hidden aria-hidden><img src={rig} alt="" /></div>
 
       {/* CTA */}
       <section className="container-x pb-24">
