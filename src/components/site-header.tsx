@@ -48,6 +48,12 @@ export function SiteHeader() {
 
         <div className="hidden lg:block">
           <Link
+            to="/dashboard"
+            className="mr-2 inline-flex items-center rounded-full border border-border px-4 py-2 text-sm font-semibold text-foreground hover:bg-muted"
+          >
+            Portal
+          </Link>
+          <Link
             to="/contact"
             className="inline-flex items-center rounded-full bg-gradient-hero px-5 py-2 text-sm font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-105"
           >
