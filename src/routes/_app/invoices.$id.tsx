@@ -27,7 +27,7 @@ function InvoiceDetail() {
   }, [id]);
 
   const updateStatus = async (s: string) => {
-    await supabase.from("invoices").update({ status: s }).eq("id", id);
+    await supabase.from("invoices").update({ status: s as any }).eq("id", id);
     setInv({ ...inv, status: s });
   };
 
