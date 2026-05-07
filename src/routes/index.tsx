@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import {
   ArrowRight,
   Shield,
@@ -90,8 +91,8 @@ function Home() {
             >
               Powering{" "}
               <span className="relative inline-block">
-                <span className="relative z-10 bg-gradient-gold bg-clip-text text-transparent">Africa's</span>
-                <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-3 w-full rounded-full bg-gold/30 blur-sm" />
+                <span className="relative z-10 bg-[linear-gradient(135deg,oklch(0.45_0.18_255),oklch(0.22_0.14_260))] bg-clip-text text-transparent dark:bg-[linear-gradient(135deg,oklch(0.78_0.14_240),oklch(0.55_0.16_255))]">Africa's</span>
+                <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-3 w-full rounded-full bg-primary/30 blur-sm" />
               </span>{" "}
               energy{" "}
               <span className="bg-gradient-emerald bg-clip-text text-transparent">future</span>.
