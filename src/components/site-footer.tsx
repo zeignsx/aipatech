@@ -36,9 +36,9 @@ export function SiteFooter() {
         <div>
           <h4 className="text-sm font-semibold">Reach Us</h4>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 text-emerald" /> Abuja & Port Harcourt, Nigeria</li>
-            <li className="flex items-center gap-2"><Phone className="h-4 w-4 text-emerald" /> +234 800 000 0000</li>
-            <li className="flex items-center gap-2"><Mail className="h-4 w-4 text-emerald" /> info@aipatechenergy.com</li>
+            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 text-emerald" /><span>Abuja &amp; Port Harcourt, Nigeria</span></li>
+            <li className="flex items-center gap-2"><Phone className="h-4 w-4 text-emerald" /><span>+234 800 000 0000</span></li>
+            <li className="flex items-center gap-2"><Mail className="h-4 w-4 text-emerald" /><span>info@aipatechenergy.com</span></li>
           </ul>
         </div>
       </div>
