@@ -78,10 +78,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "AIPATECH Energy Limited — Oil & Gas Engineering, Nigeria" },
       { name: "description", content: "Indigenous Nigerian oil & gas engineering, manufacturing, integrity management and equipment supply. Excellence, innovation and safety since 2019." },
       { name: "author", content: "AIPATECH Energy Limited" },
-      { property: "og:title", content: "AIPATECH Energy Limited (AEL)" },
-      { property: "og:description", content: "Premier indigenous oil & gas service provider in Nigeria." },
+      { property: "og:title", content: "AIPATECH Energy Limited — Oil & Gas Engineering, Nigeria" },
+      { property: "og:description", content: "Indigenous Nigerian oil & gas engineering, manufacturing, integrity management and equipment supply. Excellence, innovation and safety since 2019." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "AIPATECH Energy Limited — Oil & Gas Engineering, Nigeria" },
+      { name: "twitter:description", content: "Indigenous Nigerian oil & gas engineering, manufacturing, integrity management and equipment supply. Excellence, innovation and safety since 2019." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/093543fe-6c2c-48cc-8f01-8d3bd12cb14a/id-preview-e4f30199--8b3983f3-76f7-4ea7-8c8e-f3178021325c.lovable.app-1778155255156.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/093543fe-6c2c-48cc-8f01-8d3bd12cb14a/id-preview-e4f30199--8b3983f3-76f7-4ea7-8c8e-f3178021325c.lovable.app-1778155255156.png" },
     ],
     links: [
       {
