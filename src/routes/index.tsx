@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import {
   ArrowRight,
   Shield,
@@ -90,8 +91,8 @@ function Home() {
             >
               Powering{" "}
               <span className="relative inline-block">
-                <span className="relative z-10 bg-gradient-gold bg-clip-text text-transparent">Africa's</span>
-                <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-3 w-full rounded-full bg-gold/30 blur-sm" />
+                <span className="relative z-10 bg-[linear-gradient(135deg,oklch(0.45_0.18_255),oklch(0.22_0.14_260))] bg-clip-text text-transparent dark:bg-[linear-gradient(135deg,oklch(0.78_0.14_240),oklch(0.55_0.16_255))]">Africa's</span>
+                <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-3 w-full rounded-full bg-primary/30 blur-sm" />
               </span>{" "}
               energy{" "}
               <span className="bg-gradient-emerald bg-clip-text text-transparent">future</span>.
@@ -252,31 +253,7 @@ function Home() {
       {/* IMAGE MOSAIC + INTRO */}
       <section className="container-x py-24">
         <div className="grid items-center gap-10 lg:grid-cols-2">
-          <div className="relative grid grid-cols-6 grid-rows-6 gap-3 h-[520px]">
-            <div className="col-span-4 row-span-4 overflow-hidden rounded-3xl shadow-card">
-              <img src={refinery} alt="Nigerian refinery flare stacks at dusk" loading="lazy" className="h-full w-full object-cover" />
-            </div>
-            <div className="col-span-2 row-span-3 overflow-hidden rounded-3xl shadow-card">
-              <img src={pipes} alt="Crude oil pipeline valves" loading="lazy" className="h-full w-full object-cover" />
-            </div>
-            <div className="col-span-2 row-span-3 overflow-hidden rounded-3xl shadow-card">
-              <img src={fpso} alt="FPSO vessel offshore Nigeria" loading="lazy" className="h-full w-full object-cover" />
-            </div>
-            <div className="col-span-4 row-span-2 overflow-hidden rounded-3xl shadow-card">
-              <img src={lng} alt="LNG storage and pipelines" loading="lazy" className="h-full w-full object-cover" />
-            </div>
-            <div className="glass-strong absolute -bottom-6 -left-6 hidden rounded-2xl p-4 shadow-glow sm:block">
-              <div className="flex items-center gap-3">
-                <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-emerald text-emerald-foreground">
-                  <Flame className="h-5 w-5" />
-                </div>
-                <div>
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground">Niger Delta</div>
-                  <div className="text-sm font-semibold">Onshore & Offshore Operations</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <MosaicGallery />
 
           <div>
             <div className="text-xs font-semibold uppercase tracking-widest text-emerald">Who we are</div>
@@ -370,6 +347,137 @@ function Home() {
           </div>
         </div>
       </section>
+    </div>
+  );
+}
+
+const MOSAIC = [
+  {
+    src: refinery,
+    alt: "Nigerian refinery flare stacks at dusk",
+    span: "col-span-4 row-span-4",
+    title: "Refinery Operations",
+    tag: "Downstream",
+    desc: "Turnaround maintenance, catalyst handling and flare-system integrity for major Nigerian refineries.",
+  },
+  {
+    src: pipes,
+    alt: "Crude oil pipeline valves",
+    span: "col-span-2 row-span-3",
+    title: "Pipeline Integrity",
+    tag: "Midstream",
+    desc: "Inline inspection, valve servicing and corrosion control across crude and product pipelines.",
+  },
+  {
+    src: fpso,
+    alt: "FPSO vessel offshore Nigeria",
+    span: "col-span-2 row-span-3",
+    title: "FPSO Support",
+    tag: "Offshore",
+    desc: "Topside maintenance, mooring inspection and turret services on West African FPSOs.",
+  },
+  {
+    src: lng,
+    alt: "LNG storage and pipelines",
+    span: "col-span-4 row-span-2",
+    title: "LNG Facilities",
+    tag: "Gas",
+    desc: "Cryogenic equipment integrity, loading-arm overhauls and compressor station support.",
+  },
+] as const;
+
+function MosaicGallery() {
+  const [active, setActive] = useState<number | null>(null);
+  return (
+    <div
+      className="relative grid h-[520px] grid-cols-6 grid-rows-6 gap-3 [perspective:1400px]"
+      onMouseLeave={() => setActive(null)}
+    >
+      {MOSAIC.map((m, i) => {
+        const isActive = active === i;
+        return (
+          <motion.button
+            key={m.title}
+            type="button"
+            onClick={() => setActive((p) => (p === i ? null : i))}
+            onMouseEnter={() => setActive(i)}
+            className={`group relative overflow-hidden rounded-3xl text-left shadow-card outline-none ring-emerald/50 focus-visible:ring-2 ${m.span}`}
+            initial={{ opacity: 0, y: 20, rotateX: 8 }}
+            whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: i * 0.08 }}
+            whileHover={{ scale: 1.03, rotateY: 4, rotateX: -3, z: 30 }}
+            style={{ transformStyle: "preserve-3d" }}
+          >
+            <motion.img
+              src={m.src}
+              alt={m.alt}
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover"
+              animate={{ scale: isActive ? 1.12 : 1 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+            />
+            {/* permanent subtle bottom shade */}
+            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background/80 to-transparent" />
+
+            {/* tag chip */}
+            <div className="absolute left-3 top-3 z-10 rounded-full bg-emerald/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-foreground shadow-soft">
+              {m.tag}
+            </div>
+
+            {/* glassy half-cover */}
+            <AnimatePresence>
+              {isActive && (
+                <motion.div
+                  key="cover"
+                  initial={{ y: "100%", opacity: 0 }}
+                  animate={{ y: "0%", opacity: 1 }}
+                  exit={{ y: "100%", opacity: 0 }}
+                  transition={{ type: "spring", stiffness: 220, damping: 28 }}
+                  className="glass-strong absolute inset-x-0 bottom-0 h-1/2 rounded-t-3xl border-t border-white/20 p-5"
+                >
+                  <motion.h3
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="text-lg font-bold text-foreground"
+                  >
+                    {m.title}
+                  </motion.h3>
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.18 }}
+                    className="mt-2 line-clamp-3 text-xs text-muted-foreground sm:text-sm"
+                  >
+                    {m.desc}
+                  </motion.p>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.28 }}
+                    className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-emerald"
+                  >
+                    Explore <ArrowRight className="h-3 w-3" />
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.button>
+        );
+      })}
+
+      <div className="glass-strong pointer-events-none absolute -bottom-6 -left-6 hidden rounded-2xl p-4 shadow-glow sm:block">
+        <div className="flex items-center gap-3">
+          <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-emerald text-emerald-foreground">
+            <Flame className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground">Niger Delta</div>
+            <div className="text-sm font-semibold">Tap any image to learn more</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
