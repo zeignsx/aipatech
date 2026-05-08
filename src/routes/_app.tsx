@@ -1,7 +1,7 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Flame, LayoutDashboard, FileText, Users, LogOut, Plus } from "lucide-react";
+import { Flame, LayoutDashboard, FileText, Users, LogOut, Plus, Inbox } from "lucide-react";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
@@ -29,6 +29,7 @@ function AppLayout() {
 
   const NAV = [
     { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { to: "/bookings", label: "Bookings", icon: Inbox },
     { to: "/invoices", label: "Invoices", icon: FileText },
     { to: "/customers", label: "Customers", icon: Users },
   ] as const;

@@ -14,6 +14,65 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          channel: string
+          company: string | null
+          created_at: string
+          email: string
+          end_date: string | null
+          equipment: string
+          full_name: string
+          id: string
+          invoice_id: string | null
+          message: string | null
+          phone: string | null
+          start_date: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          channel?: string
+          company?: string | null
+          created_at?: string
+          email: string
+          end_date?: string | null
+          equipment: string
+          full_name: string
+          id?: string
+          invoice_id?: string | null
+          message?: string | null
+          phone?: string | null
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          channel?: string
+          company?: string | null
+          created_at?: string
+          email?: string
+          end_date?: string | null
+          equipment?: string
+          full_name?: string
+          id?: string
+          invoice_id?: string | null
+          message?: string | null
+          phone?: string | null
+          start_date?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customers: {
         Row: {
           address: string | null
