@@ -1,17 +1,16 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Flame } from "lucide-react";
+import { Flame, Lock, Mail, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Sign in — AIPATECH Energy" }] }),
+  head: () => ({ meta: [{ title: "Admin Sign in — AIPATECH Energy" }] }),
   component: AuthPage,
 });
 
 function AuthPage() {
   const nav = useNavigate();
-  const [mode, setMode] = useState<"login" | "signup">("login");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("admin@ael.com");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -24,50 +23,53 @@ function AuthPage() {
     e.preventDefault();
     setErr(null); setLoading(true);
     try {
-      if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email, password,
-          options: { emailRedirectTo: `${window.location.origin}/dashboard` },
-        });
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-      }
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
       nav({ to: "/dashboard" });
     } catch (e: any) { setErr(e.message ?? "Authentication failed"); }
     finally { setLoading(false); }
   };
 
   return (
-    <div className="container-x grid min-h-[80vh] place-items-center py-16">
-      <div className="w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-card">
-        <div className="flex items-center gap-2">
-          <span className="grid h-10 w-10 place-items-center rounded-lg bg-gradient-hero text-primary-foreground"><Flame className="h-5 w-5" /></span>
-          <span className="font-display text-lg font-bold">AEL Portal</span>
+    <div className="relative grid min-h-screen place-items-center overflow-hidden bg-background px-4 py-12">
+      <div className="pointer-events-none absolute inset-0 opacity-40">
+        <div className="absolute -left-32 top-20 h-96 w-96 rounded-full bg-primary/30 blur-3xl" />
+        <div className="absolute -right-20 bottom-10 h-96 w-96 rounded-full bg-emerald/30 blur-3xl" />
+      </div>
+
+      <div className="relative w-full max-w-md rounded-3xl border border-border/60 bg-card/70 p-8 shadow-card backdrop-blur-2xl">
+        <Link to="/" className="flex items-center gap-2">
+          <span className="grid h-10 w-10 place-items-center rounded-lg bg-gradient-hero text-primary-foreground shadow-soft"><Flame className="h-5 w-5" /></span>
+          <span className="font-display text-lg font-bold">AEL Admin Portal</span>
+        </Link>
+        <div className="mt-6 inline-flex items-center gap-1 rounded-full bg-emerald/10 px-3 py-1 text-xs font-semibold text-emerald">
+          <ShieldCheck className="h-3.5 w-3.5" /> Restricted access
         </div>
-        <h1 className="mt-6 text-2xl font-bold">{mode === "login" ? "Welcome back" : "Create your account"}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Manage customers, invoices and orders.</p>
+        <h1 className="mt-3 text-2xl font-bold">Sign in to manage AEL</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Authorised personnel only. Bookings, invoices, customers.</p>
 
         <form onSubmit={submit} className="mt-6 space-y-4">
-          <div>
-            <label className="text-sm font-medium">Email</label>
-            <input required type="email" value={email} onChange={(e)=>setEmail(e.target.value)} className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring" />
-          </div>
-          <div>
-            <label className="text-sm font-medium">Password</label>
-            <input required type="password" minLength={6} value={password} onChange={(e)=>setPassword(e.target.value)} className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring" />
-          </div>
+          <label className="block">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Email</span>
+            <div className="mt-1 flex items-center rounded-xl border border-input bg-background pl-3">
+              <Mail className="h-4 w-4 text-muted-foreground" />
+              <input required type="email" value={email} onChange={(e)=>setEmail(e.target.value)} className="w-full bg-transparent px-3 py-2.5 text-sm outline-none" />
+            </div>
+          </label>
+          <label className="block">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Password</span>
+            <div className="mt-1 flex items-center rounded-xl border border-input bg-background pl-3">
+              <Lock className="h-4 w-4 text-muted-foreground" />
+              <input required type="password" minLength={6} value={password} onChange={(e)=>setPassword(e.target.value)} className="w-full bg-transparent px-3 py-2.5 text-sm outline-none" />
+            </div>
+          </label>
           {err && <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{err}</p>}
-          <button disabled={loading} className="w-full rounded-full bg-gradient-hero px-5 py-2.5 font-semibold text-primary-foreground shadow-soft hover:scale-[1.01] disabled:opacity-60">
-            {loading ? "Please wait..." : mode === "login" ? "Sign in" : "Create account"}
+          <button disabled={loading} className="w-full rounded-full bg-gradient-hero px-5 py-3 font-semibold text-primary-foreground shadow-soft hover:scale-[1.01] disabled:opacity-60">
+            {loading ? "Signing in…" : "Sign in to dashboard"}
           </button>
         </form>
 
-        <button onClick={()=>{setErr(null); setMode(mode==="login"?"signup":"login");}} className="mt-4 w-full text-sm text-muted-foreground hover:text-foreground">
-          {mode==="login" ? "No account? Sign up" : "Already have an account? Sign in"}
-        </button>
-        <Link to="/" className="mt-4 block text-center text-xs text-muted-foreground hover:text-foreground">← Back to website</Link>
+        <Link to="/" className="mt-6 block text-center text-xs text-muted-foreground hover:text-foreground">← Back to website</Link>
       </div>
     </div>
   );
