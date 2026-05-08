@@ -9,8 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as RentalsRouteImport } from './routes/rentals'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as HsesRouteImport } from './routes/hses'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -25,14 +25,14 @@ import { Route as AppInvoicesIndexRouteImport } from './routes/_app/invoices.ind
 import { Route as AppInvoicesNewRouteImport } from './routes/_app/invoices.new'
 import { Route as AppInvoicesIdRouteImport } from './routes/_app/invoices.$id'
 
-const ShopRoute = ShopRouteImport.update({
-  id: '/shop',
-  path: '/shop',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RentalsRoute = RentalsRouteImport.update({
+  id: '/rentals',
+  path: '/rentals',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsRoute = ProjectsRouteImport.update({
@@ -108,8 +108,8 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/hses': typeof HsesRoute
   '/projects': typeof ProjectsRoute
+  '/rentals': typeof RentalsRoute
   '/services': typeof ServicesRoute
-  '/shop': typeof ShopRoute
   '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
   '/invoices/$id': typeof AppInvoicesIdRoute
@@ -124,8 +124,8 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/hses': typeof HsesRoute
   '/projects': typeof ProjectsRoute
+  '/rentals': typeof RentalsRoute
   '/services': typeof ServicesRoute
-  '/shop': typeof ShopRoute
   '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
   '/invoices/$id': typeof AppInvoicesIdRoute
@@ -142,8 +142,8 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/hses': typeof HsesRoute
   '/projects': typeof ProjectsRoute
+  '/rentals': typeof RentalsRoute
   '/services': typeof ServicesRoute
-  '/shop': typeof ShopRoute
   '/_app/customers': typeof AppCustomersRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/invoices/$id': typeof AppInvoicesIdRoute
@@ -160,8 +160,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/hses'
     | '/projects'
+    | '/rentals'
     | '/services'
-    | '/shop'
     | '/customers'
     | '/dashboard'
     | '/invoices/$id'
@@ -176,8 +176,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/hses'
     | '/projects'
+    | '/rentals'
     | '/services'
-    | '/shop'
     | '/customers'
     | '/dashboard'
     | '/invoices/$id'
@@ -193,8 +193,8 @@ export interface FileRouteTypes {
     | '/contact'
     | '/hses'
     | '/projects'
+    | '/rentals'
     | '/services'
-    | '/shop'
     | '/_app/customers'
     | '/_app/dashboard'
     | '/_app/invoices/$id'
@@ -211,24 +211,24 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   HsesRoute: typeof HsesRoute
   ProjectsRoute: typeof ProjectsRoute
+  RentalsRoute: typeof RentalsRoute
   ServicesRoute: typeof ServicesRoute
-  ShopRoute: typeof ShopRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/shop': {
-      id: '/shop'
-      path: '/shop'
-      fullPath: '/shop'
-      preLoaderRoute: typeof ShopRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/services': {
       id: '/services'
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rentals': {
+      id: '/rentals'
+      path: '/rentals'
+      fullPath: '/rentals'
+      preLoaderRoute: typeof RentalsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects': {
@@ -352,9 +352,19 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   HsesRoute: HsesRoute,
   ProjectsRoute: ProjectsRoute,
+  RentalsRoute: RentalsRoute,
   ServicesRoute: ServicesRoute,
-  ShopRoute: ShopRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
