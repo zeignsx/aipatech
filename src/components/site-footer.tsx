@@ -29,7 +29,7 @@ export function SiteFooter() {
           <h4 className="text-sm font-semibold">Resources</h4>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
             <li><Link to="/hses" className="hover:text-foreground">HSES Policies</Link></li>
-            <li><Link to="/shop" className="hover:text-foreground">Equipment Shop</Link></li>
+            <li><Link to="/rentals" className="hover:text-foreground">Equipment Rentals</Link></li>
             <li><Link to="/contact" className="hover:text-foreground">Contact</Link></li>
           </ul>
         </div>
