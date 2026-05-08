@@ -21,6 +21,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppCustomersRouteImport } from './routes/_app/customers'
+import { Route as AppBookingsRouteImport } from './routes/_app/bookings'
 import { Route as AppInvoicesIndexRouteImport } from './routes/_app/invoices.index'
 import { Route as AppInvoicesNewRouteImport } from './routes/_app/invoices.new'
 import { Route as AppInvoicesIdRouteImport } from './routes/_app/invoices.$id'
@@ -84,6 +85,11 @@ const AppCustomersRoute = AppCustomersRouteImport.update({
   path: '/customers',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBookingsRoute = AppBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppInvoicesIndexRoute = AppInvoicesIndexRouteImport.update({
   id: '/invoices/',
   path: '/invoices/',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/projects': typeof ProjectsRoute
   '/rentals': typeof RentalsRoute
   '/services': typeof ServicesRoute
+  '/bookings': typeof AppBookingsRoute
   '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
   '/invoices/$id': typeof AppInvoicesIdRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/projects': typeof ProjectsRoute
   '/rentals': typeof RentalsRoute
   '/services': typeof ServicesRoute
+  '/bookings': typeof AppBookingsRoute
   '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
   '/invoices/$id': typeof AppInvoicesIdRoute
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/projects': typeof ProjectsRoute
   '/rentals': typeof RentalsRoute
   '/services': typeof ServicesRoute
+  '/_app/bookings': typeof AppBookingsRoute
   '/_app/customers': typeof AppCustomersRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/invoices/$id': typeof AppInvoicesIdRoute
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/projects'
     | '/rentals'
     | '/services'
+    | '/bookings'
     | '/customers'
     | '/dashboard'
     | '/invoices/$id'
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/projects'
     | '/rentals'
     | '/services'
+    | '/bookings'
     | '/customers'
     | '/dashboard'
     | '/invoices/$id'
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
     | '/projects'
     | '/rentals'
     | '/services'
+    | '/_app/bookings'
     | '/_app/customers'
     | '/_app/dashboard'
     | '/_app/invoices/$id'
@@ -301,6 +313,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCustomersRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/bookings': {
+      id: '/_app/bookings'
+      path: '/bookings'
+      fullPath: '/bookings'
+      preLoaderRoute: typeof AppBookingsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/invoices/': {
       id: '/_app/invoices/'
       path: '/invoices'
@@ -326,6 +345,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppBookingsRoute: typeof AppBookingsRoute
   AppCustomersRoute: typeof AppCustomersRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppInvoicesIdRoute: typeof AppInvoicesIdRoute
@@ -334,6 +354,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppBookingsRoute: AppBookingsRoute,
   AppCustomersRoute: AppCustomersRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppInvoicesIdRoute: AppInvoicesIdRoute,
@@ -358,3 +379,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
