@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { FileText, DollarSign, Users, Clock, Inbox, TrendingUp, Mail, MessageCircle } from "lucide-react";
+import { FileText, DollarSign, Users, Clock, Inbox, TrendingUp, Mail, MessageCircle, Plus, AlertCircle, CheckCircle2, ImageIcon, Settings as SettingsIcon } from "lucide-react";
 
 export const Route = createFileRoute("/_app/dashboard")({
   component: Dashboard,
@@ -67,6 +67,23 @@ function Dashboard() {
     { l: "Outstanding", v: fmt(stats.pending), icon: Clock, c: "bg-gradient-hero" },
   ];
 
+  const overdue = invs.filter(i => i.status === "overdue" || (i.status === "sent" && i.due_date && new Date(i.due_date) < new Date())).slice(0, 5);
+  const statusBadge = (s: string) => {
+    const map: Record<string, string> = {
+      paid: "bg-emerald/15 text-emerald",
+      sent: "bg-primary/15 text-primary",
+      overdue: "bg-destructive/15 text-destructive",
+      draft: "bg-secondary text-foreground",
+      cancelled: "bg-muted text-muted-foreground",
+    };
+    return map[s] ?? "bg-secondary";
+  };
+
+  const markPaid = async (id: string) => {
+    await supabase.from("invoices").update({ status: "paid" }).eq("id", id);
+    load();
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -77,6 +94,22 @@ function Dashboard() {
         <div className="flex gap-2">
           <Link to="/invoices/new" className="rounded-full bg-gradient-hero px-4 py-2 text-sm font-semibold text-primary-foreground shadow-soft hover:scale-[1.02]">+ New invoice</Link>
         </div>
+      </div>
+
+      {/* Quick actions */}
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          { to: "/invoices/new", l: "New invoice", icon: Plus, c: "bg-gradient-hero" },
+          { to: "/customers", l: "Add customer", icon: Users, c: "bg-gradient-emerald" },
+          { to: "/bookings", l: "Open inbox", icon: Inbox, c: "bg-gradient-gold" },
+          { to: "/site-content", l: "Edit website images", icon: ImageIcon, c: "bg-gradient-hero" },
+        ].map((q) => (
+          <Link key={q.l} to={q.to} className="group flex items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-card">
+            <span className={`grid h-10 w-10 place-items-center rounded-xl ${q.c} text-primary-foreground shadow-soft`}><q.icon className="h-5 w-5" /></span>
+            <span className="text-sm font-semibold">{q.l}</span>
+            <span className="ml-auto text-xs text-muted-foreground transition-colors group-hover:text-primary">→</span>
+          </Link>
+        ))}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -177,6 +210,44 @@ function Dashboard() {
             </ul>
           )}
         </div>
+      </div>
+
+      {/* Outstanding / overdue invoices */}
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-soft">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="h-4 w-4 text-destructive" />
+            <h2 className="font-semibold">Action needed — overdue / awaiting payment</h2>
+          </div>
+          <Link to="/invoices" className="text-sm font-semibold text-primary hover:underline">All invoices</Link>
+        </div>
+        {overdue.length === 0 ? (
+          <p className="mt-6 inline-flex items-center gap-2 rounded-xl border border-emerald/30 bg-emerald/5 px-4 py-3 text-sm text-emerald"><CheckCircle2 className="h-4 w-4" /> All clear — no overdue invoices.</p>
+        ) : (
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="text-left text-xs uppercase text-muted-foreground">
+                <tr><th className="py-2">Invoice</th><th>Status</th><th>Due</th><th>Amount</th><th></th></tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {overdue.map((i) => (
+                  <tr key={i.id}>
+                    <td className="py-3"><Link to="/invoices/$id" params={{ id: i.id }} className="font-semibold text-primary hover:underline">{i.invoice_number}</Link></td>
+                    <td><span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize ${statusBadge(i.status)}`}>{i.status}</span></td>
+                    <td className="text-muted-foreground">{i.due_date ?? "—"}</td>
+                    <td className="font-bold">{Number(i.total).toLocaleString(undefined, { style: "currency", currency: i.currency || "USD" })}</td>
+                    <td className="text-right"><button onClick={()=>markPaid(i.id)} className="rounded-full bg-emerald px-3 py-1 text-xs font-semibold text-emerald-foreground hover:scale-105">Mark paid</button></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* footer link to settings */}
+      <div className="text-center text-xs text-muted-foreground">
+        <Link to="/settings" className="inline-flex items-center gap-1 hover:text-foreground"><SettingsIcon className="h-3 w-3" /> Account settings</Link>
       </div>
     </div>
   );
