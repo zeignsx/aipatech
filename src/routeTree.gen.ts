@@ -20,6 +20,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppSiteContentRouteImport } from './routes/_app/site-content'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppCustomersRouteImport } from './routes/_app/customers'
 import { Route as AppBookingsRouteImport } from './routes/_app/bookings'
@@ -81,6 +82,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppSiteContentRoute = AppSiteContentRouteImport.update({
+  id: '/site-content',
+  path: '/site-content',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -126,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/bookings': typeof AppBookingsRoute
   '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
+  '/site-content': typeof AppSiteContentRoute
   '/invoices/$id': typeof AppInvoicesIdRoute
   '/invoices/new': typeof AppInvoicesNewRoute
   '/invoices/': typeof AppInvoicesIndexRoute
@@ -144,6 +151,7 @@ export interface FileRoutesByTo {
   '/bookings': typeof AppBookingsRoute
   '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
+  '/site-content': typeof AppSiteContentRoute
   '/invoices/$id': typeof AppInvoicesIdRoute
   '/invoices/new': typeof AppInvoicesNewRoute
   '/invoices': typeof AppInvoicesIndexRoute
@@ -164,6 +172,7 @@ export interface FileRoutesById {
   '/_app/bookings': typeof AppBookingsRoute
   '/_app/customers': typeof AppCustomersRoute
   '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/site-content': typeof AppSiteContentRoute
   '/_app/invoices/$id': typeof AppInvoicesIdRoute
   '/_app/invoices/new': typeof AppInvoicesNewRoute
   '/_app/invoices/': typeof AppInvoicesIndexRoute
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
     | '/bookings'
     | '/customers'
     | '/dashboard'
+    | '/site-content'
     | '/invoices/$id'
     | '/invoices/new'
     | '/invoices/'
@@ -202,6 +212,7 @@ export interface FileRouteTypes {
     | '/bookings'
     | '/customers'
     | '/dashboard'
+    | '/site-content'
     | '/invoices/$id'
     | '/invoices/new'
     | '/invoices'
@@ -221,6 +232,7 @@ export interface FileRouteTypes {
     | '/_app/bookings'
     | '/_app/customers'
     | '/_app/dashboard'
+    | '/_app/site-content'
     | '/_app/invoices/$id'
     | '/_app/invoices/new'
     | '/_app/invoices/'
@@ -319,6 +331,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/site-content': {
+      id: '/_app/site-content'
+      path: '/site-content'
+      fullPath: '/site-content'
+      preLoaderRoute: typeof AppSiteContentRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/dashboard': {
       id: '/_app/dashboard'
       path: '/dashboard'
@@ -368,6 +387,7 @@ interface AppRouteChildren {
   AppBookingsRoute: typeof AppBookingsRoute
   AppCustomersRoute: typeof AppCustomersRoute
   AppDashboardRoute: typeof AppDashboardRoute
+  AppSiteContentRoute: typeof AppSiteContentRoute
   AppInvoicesIdRoute: typeof AppInvoicesIdRoute
   AppInvoicesNewRoute: typeof AppInvoicesNewRoute
   AppInvoicesIndexRoute: typeof AppInvoicesIndexRoute
@@ -377,6 +397,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppBookingsRoute: AppBookingsRoute,
   AppCustomersRoute: AppCustomersRoute,
   AppDashboardRoute: AppDashboardRoute,
+  AppSiteContentRoute: AppSiteContentRoute,
   AppInvoicesIdRoute: AppInvoicesIdRoute,
   AppInvoicesNewRoute: AppInvoicesNewRoute,
   AppInvoicesIndexRoute: AppInvoicesIndexRoute,
@@ -400,3 +421,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
