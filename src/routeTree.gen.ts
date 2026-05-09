@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RentalsRouteImport } from './routes/rentals'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as HsesRouteImport } from './routes/hses'
@@ -19,6 +20,8 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppSiteContentRouteImport } from './routes/_app/site-content'
+import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppCustomersRouteImport } from './routes/_app/customers'
 import { Route as AppBookingsRouteImport } from './routes/_app/bookings'
@@ -29,6 +32,11 @@ import { Route as AppInvoicesIdRouteImport } from './routes/_app/invoices.$id'
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RentalsRoute = RentalsRouteImport.update({
@@ -75,6 +83,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppSiteContentRoute = AppSiteContentRouteImport.update({
+  id: '/site-content',
+  path: '/site-content',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -115,10 +133,13 @@ export interface FileRoutesByFullPath {
   '/hses': typeof HsesRoute
   '/projects': typeof ProjectsRoute
   '/rentals': typeof RentalsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/services': typeof ServicesRoute
   '/bookings': typeof AppBookingsRoute
   '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
+  '/settings': typeof AppSettingsRoute
+  '/site-content': typeof AppSiteContentRoute
   '/invoices/$id': typeof AppInvoicesIdRoute
   '/invoices/new': typeof AppInvoicesNewRoute
   '/invoices/': typeof AppInvoicesIndexRoute
@@ -132,10 +153,13 @@ export interface FileRoutesByTo {
   '/hses': typeof HsesRoute
   '/projects': typeof ProjectsRoute
   '/rentals': typeof RentalsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/services': typeof ServicesRoute
   '/bookings': typeof AppBookingsRoute
   '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
+  '/settings': typeof AppSettingsRoute
+  '/site-content': typeof AppSiteContentRoute
   '/invoices/$id': typeof AppInvoicesIdRoute
   '/invoices/new': typeof AppInvoicesNewRoute
   '/invoices': typeof AppInvoicesIndexRoute
@@ -151,10 +175,13 @@ export interface FileRoutesById {
   '/hses': typeof HsesRoute
   '/projects': typeof ProjectsRoute
   '/rentals': typeof RentalsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/services': typeof ServicesRoute
   '/_app/bookings': typeof AppBookingsRoute
   '/_app/customers': typeof AppCustomersRoute
   '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/settings': typeof AppSettingsRoute
+  '/_app/site-content': typeof AppSiteContentRoute
   '/_app/invoices/$id': typeof AppInvoicesIdRoute
   '/_app/invoices/new': typeof AppInvoicesNewRoute
   '/_app/invoices/': typeof AppInvoicesIndexRoute
@@ -170,10 +197,13 @@ export interface FileRouteTypes {
     | '/hses'
     | '/projects'
     | '/rentals'
+    | '/reset-password'
     | '/services'
     | '/bookings'
     | '/customers'
     | '/dashboard'
+    | '/settings'
+    | '/site-content'
     | '/invoices/$id'
     | '/invoices/new'
     | '/invoices/'
@@ -187,10 +217,13 @@ export interface FileRouteTypes {
     | '/hses'
     | '/projects'
     | '/rentals'
+    | '/reset-password'
     | '/services'
     | '/bookings'
     | '/customers'
     | '/dashboard'
+    | '/settings'
+    | '/site-content'
     | '/invoices/$id'
     | '/invoices/new'
     | '/invoices'
@@ -205,10 +238,13 @@ export interface FileRouteTypes {
     | '/hses'
     | '/projects'
     | '/rentals'
+    | '/reset-password'
     | '/services'
     | '/_app/bookings'
     | '/_app/customers'
     | '/_app/dashboard'
+    | '/_app/settings'
+    | '/_app/site-content'
     | '/_app/invoices/$id'
     | '/_app/invoices/new'
     | '/_app/invoices/'
@@ -224,6 +260,7 @@ export interface RootRouteChildren {
   HsesRoute: typeof HsesRoute
   ProjectsRoute: typeof ProjectsRoute
   RentalsRoute: typeof RentalsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ServicesRoute: typeof ServicesRoute
 }
 
@@ -234,6 +271,13 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rentals': {
@@ -299,6 +343,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/site-content': {
+      id: '/_app/site-content'
+      path: '/site-content'
+      fullPath: '/site-content'
+      preLoaderRoute: typeof AppSiteContentRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/dashboard': {
       id: '/_app/dashboard'
       path: '/dashboard'
@@ -348,6 +406,8 @@ interface AppRouteChildren {
   AppBookingsRoute: typeof AppBookingsRoute
   AppCustomersRoute: typeof AppCustomersRoute
   AppDashboardRoute: typeof AppDashboardRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppSiteContentRoute: typeof AppSiteContentRoute
   AppInvoicesIdRoute: typeof AppInvoicesIdRoute
   AppInvoicesNewRoute: typeof AppInvoicesNewRoute
   AppInvoicesIndexRoute: typeof AppInvoicesIndexRoute
@@ -357,6 +417,8 @@ const AppRouteChildren: AppRouteChildren = {
   AppBookingsRoute: AppBookingsRoute,
   AppCustomersRoute: AppCustomersRoute,
   AppDashboardRoute: AppDashboardRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppSiteContentRoute: AppSiteContentRoute,
   AppInvoicesIdRoute: AppInvoicesIdRoute,
   AppInvoicesNewRoute: AppInvoicesNewRoute,
   AppInvoicesIndexRoute: AppInvoicesIndexRoute,
@@ -374,18 +436,9 @@ const rootRouteChildren: RootRouteChildren = {
   HsesRoute: HsesRoute,
   ProjectsRoute: ProjectsRoute,
   RentalsRoute: RentalsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ServicesRoute: ServicesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
