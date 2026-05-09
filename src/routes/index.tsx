@@ -25,6 +25,7 @@ import engineers from "@/assets/ng-engineers.jpg";
 import lng from "@/assets/ng-lng.jpg";
 import fpso from "@/assets/ng-fpso.jpg";
 import pipes from "@/assets/ng-pipes.jpg";
+import { useSiteImage } from "@/hooks/use-site-image";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -55,6 +56,9 @@ const FEATURED = [
 const CLIENTS = ["Shell", "ExxonMobil", "Chevron", "NNPC", "Total", "NLNG", "Halliburton", "Dangote"];
 
 function Home() {
+  const heroSrc = useSiteImage("hero_main", heroImg);
+  const servicesBg = useSiteImage("home_services_bg", engineers);
+  const ctaBg = useSiteImage("home_cta_bg", fpso);
   return (
     <div className="relative overflow-hidden">
       {/* Ambient color blobs that bleed through every glass surface */}
@@ -160,7 +164,7 @@ function Home() {
               {/* main image */}
               <div className="relative overflow-hidden rounded-[2rem] border border-white/10 shadow-card">
                 <img
-                  src={heroImg}
+                  src={heroSrc}
                   alt="Offshore oil rig at sunset"
                   width={1920}
                   height={1280}
@@ -286,7 +290,7 @@ function Home() {
       {/* FEATURED SERVICES — glass cards */}
       <section className="relative py-24">
         <div className="absolute inset-0 -z-10">
-          <img src={engineers} alt="Nigerian oil & gas engineers" loading="lazy" className="h-full w-full object-cover" />
+          <img src={servicesBg} alt="Nigerian oil & gas engineers" loading="lazy" className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-background/85 backdrop-blur-md dark:bg-background/85" />
         </div>
         <div className="container-x">
@@ -329,7 +333,7 @@ function Home() {
       {/* CTA */}
       <section className="container-x pb-24">
         <div className="relative overflow-hidden rounded-3xl shadow-card">
-          <img src={fpso} alt="FPSO offshore Nigeria" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+          <img src={ctaBg} alt="FPSO offshore Nigeria" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/85 via-primary/70 to-emerald/60" />
           <div className="relative grid gap-6 p-10 text-primary-foreground sm:grid-cols-[1fr_auto] sm:items-center sm:p-16">
             <div>
