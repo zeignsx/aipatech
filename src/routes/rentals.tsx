@@ -7,6 +7,7 @@ import rig from "@/assets/ng-offshore-rig.jpg";
 import pipes from "@/assets/ng-pipes.jpg";
 import refinery from "@/assets/ng-refinery.jpg";
 import fpso from "@/assets/ng-fpso.jpg";
+import { useSiteImage } from "@/hooks/use-site-image";
 
 export const Route = createFileRoute("/rentals")({
   head: () => ({
@@ -18,16 +19,15 @@ export const Route = createFileRoute("/rentals")({
   component: Rentals,
 });
 
-const FLEET = [
-  { n: "Industrial Air Compressor — 750 cfm", c: "Compressors", img: refinery, day: 850 },
-  { n: "Diesel Generator 500 kVA", c: "Power", img: rig, day: 1200 },
-  { n: 'API 5L Line Pipe Spreads — 12"', c: "OCTG", img: pipes, day: 320 },
-  { n: "Centrifugal Process Pump", c: "Pumps", img: refinery, day: 480 },
-  { n: "Gas Filtration Skid", c: "Gas Processing", img: fpso, day: 990 },
-  { n: "Refrigerated Air Dryer", c: "Compressors", img: refinery, day: 270 },
-];
-
 function Rentals() {
+  const FLEET = [
+    { n: "Industrial Air Compressor — 750 cfm", c: "Compressors", img: useSiteImage("rentals_compressor", refinery), day: 850 },
+    { n: "Diesel Generator 500 kVA", c: "Power", img: useSiteImage("rentals_generator", rig), day: 1200 },
+    { n: 'API 5L Line Pipe Spreads — 12"', c: "OCTG", img: useSiteImage("rentals_pipe", pipes), day: 320 },
+    { n: "Centrifugal Process Pump", c: "Pumps", img: useSiteImage("rentals_pump", refinery), day: 480 },
+    { n: "Gas Filtration Skid", c: "Gas Processing", img: useSiteImage("rentals_gas", fpso), day: 990 },
+    { n: "Refrigerated Air Dryer", c: "Compressors", img: useSiteImage("rentals_dryer", refinery), day: 270 },
+  ];
   const [pick, setPick] = useState<string>("");
   const [form, setForm] = useState({ full_name: "", company: "", email: "", phone: "", start_date: "", end_date: "", message: "" });
   const [channel, setChannel] = useState<"email"|"whatsapp">("email");
