@@ -13,6 +13,7 @@ import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RentalsRouteImport } from './routes/rentals'
 import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as PortalRouteImport } from './routes/portal'
 import { Route as HsesRouteImport } from './routes/hses'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ClientsRouteImport } from './routes/clients'
@@ -48,6 +49,11 @@ const RentalsRoute = RentalsRouteImport.update({
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalRoute = PortalRouteImport.update({
+  id: '/portal',
+  path: '/portal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HsesRoute = HsesRouteImport.update({
@@ -137,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/clients': typeof ClientsRoute
   '/contact': typeof ContactRoute
   '/hses': typeof HsesRoute
+  '/portal': typeof PortalRoute
   '/projects': typeof ProjectsRoute
   '/rentals': typeof RentalsRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -158,6 +165,7 @@ export interface FileRoutesByTo {
   '/clients': typeof ClientsRoute
   '/contact': typeof ContactRoute
   '/hses': typeof HsesRoute
+  '/portal': typeof PortalRoute
   '/projects': typeof ProjectsRoute
   '/rentals': typeof RentalsRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -181,6 +189,7 @@ export interface FileRoutesById {
   '/clients': typeof ClientsRoute
   '/contact': typeof ContactRoute
   '/hses': typeof HsesRoute
+  '/portal': typeof PortalRoute
   '/projects': typeof ProjectsRoute
   '/rentals': typeof RentalsRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -204,6 +213,7 @@ export interface FileRouteTypes {
     | '/clients'
     | '/contact'
     | '/hses'
+    | '/portal'
     | '/projects'
     | '/rentals'
     | '/reset-password'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
     | '/clients'
     | '/contact'
     | '/hses'
+    | '/portal'
     | '/projects'
     | '/rentals'
     | '/reset-password'
@@ -247,6 +258,7 @@ export interface FileRouteTypes {
     | '/clients'
     | '/contact'
     | '/hses'
+    | '/portal'
     | '/projects'
     | '/rentals'
     | '/reset-password'
@@ -270,6 +282,7 @@ export interface RootRouteChildren {
   ClientsRoute: typeof ClientsRoute
   ContactRoute: typeof ContactRoute
   HsesRoute: typeof HsesRoute
+  PortalRoute: typeof PortalRoute
   ProjectsRoute: typeof ProjectsRoute
   RentalsRoute: typeof RentalsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -304,6 +317,13 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal': {
+      id: '/portal'
+      path: '/portal'
+      fullPath: '/portal'
+      preLoaderRoute: typeof PortalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/hses': {
@@ -455,6 +475,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClientsRoute: ClientsRoute,
   ContactRoute: ContactRoute,
   HsesRoute: HsesRoute,
+  PortalRoute: PortalRoute,
   ProjectsRoute: ProjectsRoute,
   RentalsRoute: RentalsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
@@ -463,3 +484,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
