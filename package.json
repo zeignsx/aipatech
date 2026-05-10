@@ -1,4 +1,12 @@
 {
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "vercel-build": "npm run build",
+    "preview": "vite preview"
+  }
+}
+{
   "name": "tanstack_start_ts",
   "private": true,
   "sideEffects": false,
