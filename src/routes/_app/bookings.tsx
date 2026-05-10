@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, MessageCircle, FileText, Calendar, Building2, Phone, Trash2, RefreshCw } from "lucide-react";
+import { Mail, MessageCircle, FileText, Calendar, Building2, Phone, Trash2, RefreshCw, CheckCircle2, XCircle, Clock, Flag } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_app/bookings")({
   component: Bookings,
@@ -17,7 +18,9 @@ function Bookings() {
   useEffect(() => { load(); }, []);
 
   const setStatus = async (id: string, status: string) => {
-    await supabase.from("bookings").update({ status }).eq("id", id);
+    const { error } = await supabase.from("bookings").update({ status }).eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    toast.success(`Marked ${status}`);
     load();
   };
 
@@ -58,13 +61,20 @@ function Bookings() {
         invoice_id: inv.id, description: `${b.equipment} (${days} day${days>1?"s":""})`,
         quantity: days, unit_price: unit, amount: subtotal, position: 0,
       });
-      await supabase.from("bookings").update({ status: "invoiced", invoice_id: inv.id }).eq("id", b.id);
+      await supabase.from("bookings").update({ status: "approved", invoice_id: inv.id }).eq("id", b.id);
       nav({ to: "/invoices/$id", params: { id: inv.id } });
     } finally { setBusy(null); }
   };
 
   const shown = list.filter(b => filter === "all" || b.status === filter);
-  const counts = ["new","invoiced","closed"].reduce((a,s)=>({ ...a, [s]: list.filter(x=>x.status===s).length }), {} as Record<string,number>);
+  const STATUSES = ["pending","approved","rejected","completed"] as const;
+  const counts = STATUSES.reduce((a,s)=>({ ...a, [s]: list.filter(x=>x.status===s).length }), {} as Record<string,number>);
+  const statusStyle = (s: string) => ({
+    pending:   "bg-gold/20 text-gold-foreground",
+    approved:  "bg-emerald/20 text-emerald",
+    rejected:  "bg-destructive/15 text-destructive",
+    completed: "bg-primary/15 text-primary",
+  } as Record<string,string>)[s] ?? "bg-muted text-muted-foreground";
 
   return (
     <div className="space-y-6">
@@ -77,7 +87,7 @@ function Bookings() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {[{k:"all",l:`All (${list.length})`},{k:"new",l:`New (${counts.new||0})`},{k:"invoiced",l:`Invoiced (${counts.invoiced||0})`},{k:"closed",l:`Closed (${counts.closed||0})`}].map(t=>(
+        {[{k:"all",l:`All (${list.length})`}, ...STATUSES.map(s=>({k:s,l:`${s[0].toUpperCase()+s.slice(1)} (${counts[s]||0})`}))].map(t=>(
           <button key={t.k} onClick={()=>setFilter(t.k)} className={`rounded-full px-4 py-1.5 text-xs font-semibold ${filter===t.k?"bg-gradient-hero text-primary-foreground":"border border-border bg-card text-muted-foreground hover:text-foreground"}`}>{t.l}</button>
         ))}
       </div>
@@ -95,7 +105,7 @@ function Bookings() {
                   <div className="text-xs font-mono text-muted-foreground">AEL-{b.id.slice(0,8).toUpperCase()}</div>
                   <h3 className="mt-1 font-semibold">{b.equipment}</h3>
                 </div>
-                <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${b.status==="new"?"bg-gold/20 text-gold-foreground":b.status==="invoiced"?"bg-emerald/20 text-emerald":"bg-muted text-muted-foreground"}`}>{b.status}</span>
+                <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${statusStyle(b.status)}`}>{b.status}</span>
               </div>
 
               <div className="mt-3 grid gap-1.5 text-sm">
@@ -110,6 +120,15 @@ function Bookings() {
               </div>
 
               <div className="mt-4 flex flex-wrap gap-2">
+                {b.status === "pending" && (
+                  <>
+                    <button onClick={()=>setStatus(b.id,"approved")} className="inline-flex items-center gap-1 rounded-full bg-emerald px-3 py-1.5 text-xs font-semibold text-emerald-foreground hover:scale-[1.02]"><CheckCircle2 className="h-3.5 w-3.5"/> Approve</button>
+                    <button onClick={()=>setStatus(b.id,"rejected")} className="inline-flex items-center gap-1 rounded-full bg-destructive px-3 py-1.5 text-xs font-semibold text-destructive-foreground hover:scale-[1.02]"><XCircle className="h-3.5 w-3.5"/> Reject</button>
+                  </>
+                )}
+                {b.status === "approved" && (
+                  <button onClick={()=>setStatus(b.id,"completed")} className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:scale-[1.02]"><Flag className="h-3.5 w-3.5"/> Mark completed</button>
+                )}
                 {b.invoice_id ? (
                   <button onClick={()=>nav({to:"/invoices/$id", params:{id:b.invoice_id}})} className="inline-flex items-center gap-1 rounded-full bg-gradient-emerald px-3 py-1.5 text-xs font-semibold text-emerald-foreground"><FileText className="h-3.5 w-3.5"/> View invoice</button>
                 ) : (
@@ -118,7 +137,7 @@ function Bookings() {
                 <a href={`mailto:${b.email}?subject=Re: Your AEL rental request AEL-${b.id.slice(0,8).toUpperCase()}`} className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted"><Mail className="h-3.5 w-3.5"/> Reply</a>
                 {b.phone && <a target="_blank" rel="noopener" href={`https://wa.me/${b.phone.replace(/[^0-9]/g,"")}`} className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted"><MessageCircle className="h-3.5 w-3.5"/> WhatsApp</a>}
                 <select value={b.status} onChange={(e)=>setStatus(b.id, e.target.value)} className="rounded-full border border-border bg-card px-3 py-1.5 text-xs">
-                  {["new","invoiced","closed"].map(s=><option key={s} value={s}>{s}</option>)}
+                  {STATUSES.map(s=><option key={s} value={s}>{s}</option>)}
                 </select>
                 <button onClick={()=>remove(b.id)} className="ml-auto p-1.5 text-muted-foreground hover:text-destructive"><Trash2 className="h-3.5 w-3.5"/></button>
               </div>

@@ -1,13 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/page-hero";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Mail, MessageCircle, CheckCircle2, Calendar, Wrench } from "lucide-react";
-import rig from "@/assets/ng-offshore-rig.jpg";
-import pipes from "@/assets/ng-pipes.jpg";
 import refinery from "@/assets/ng-refinery.jpg";
-import fpso from "@/assets/ng-fpso.jpg";
-import { useSiteImage } from "@/hooks/use-site-image";
 
 export const Route = createFileRoute("/rentals")({
   head: () => ({
@@ -20,14 +16,12 @@ export const Route = createFileRoute("/rentals")({
 });
 
 function Rentals() {
-  const FLEET = [
-    { n: "Industrial Air Compressor — 750 cfm", c: "Compressors", img: useSiteImage("rentals_compressor", refinery), day: 850 },
-    { n: "Diesel Generator 500 kVA", c: "Power", img: useSiteImage("rentals_generator", rig), day: 1200 },
-    { n: 'API 5L Line Pipe Spreads — 12"', c: "OCTG", img: useSiteImage("rentals_pipe", pipes), day: 320 },
-    { n: "Centrifugal Process Pump", c: "Pumps", img: useSiteImage("rentals_pump", refinery), day: 480 },
-    { n: "Gas Filtration Skid", c: "Gas Processing", img: useSiteImage("rentals_gas", fpso), day: 990 },
-    { n: "Refrigerated Air Dryer", c: "Compressors", img: useSiteImage("rentals_dryer", refinery), day: 270 },
-  ];
+  const [FLEET, setFLEET] = useState<{ id: string; n: string; c: string; img: string; day: number; desc?: string|null }[]>([]);
+  useEffect(() => {
+    supabase.from("rentals").select("*").eq("active", true).order("position").then(({ data }) => {
+      setFLEET((data ?? []).map((r:any)=>({ id:r.id, n:r.name, c:r.category, img:r.image_url || refinery, day:Number(r.day_rate), desc:r.description })));
+    });
+  }, []);
   const [pick, setPick] = useState<string>("");
   const [form, setForm] = useState({ full_name: "", company: "", email: "", phone: "", start_date: "", end_date: "", message: "" });
   const [channel, setChannel] = useState<"email"|"whatsapp">("email");
@@ -42,10 +36,12 @@ function Rentals() {
     if (!form.full_name || !form.email) { setErr("Name and email are required."); return; }
     setBusy(true);
     try {
+      const { data: u } = await supabase.auth.getUser();
       const { data, error } = await supabase.from("bookings").insert({
         full_name: form.full_name, company: form.company || null, email: form.email,
         phone: form.phone || null, equipment: pick, start_date: form.start_date || null,
         end_date: form.end_date || null, channel, message: form.message || null,
+        customer_user_id: u.user?.id ?? null,
       }).select("id").single();
       if (error) throw error;
       const ref = "AEL-" + (data!.id as string).slice(0, 8).toUpperCase();
@@ -93,12 +89,17 @@ function Rentals() {
                       <h3 className="text-sm font-semibold leading-tight">{f.n}</h3>
                       <span className="text-sm font-bold text-primary">${f.day}/day</span>
                     </div>
-                    <p className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground"><Wrench className="h-3 w-3" /> Field-serviced • crew optional</p>
+                    <p className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground"><Wrench className="h-3 w-3" /> {f.desc || "Field-serviced • crew optional"}</p>
                   </div>
                 </button>
               );
             })}
           </div>
+          {FLEET.length === 0 && (
+            <div className="mt-6 rounded-2xl border border-dashed border-border bg-card p-12 text-center text-sm text-muted-foreground">
+              No equipment available right now. Please check back soon or contact us directly.
+            </div>
+          )}
         </div>
 
         {/* Booking box */}

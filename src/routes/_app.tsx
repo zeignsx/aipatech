@@ -1,7 +1,7 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Flame, LayoutDashboard, FileText, Users, LogOut, Plus, Inbox, Image as ImageIcon, Settings } from "lucide-react";
+import { Flame, LayoutDashboard, FileText, Users, LogOut, Plus, Inbox, Image as ImageIcon, Settings, Wrench } from "lucide-react";
 
 export const Route = createFileRoute("/_app")({
   component: AppLayout,
@@ -30,6 +30,7 @@ function AppLayout() {
   const NAV = [
     { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { to: "/bookings", label: "Bookings", icon: Inbox },
+    { to: "/manage-rentals", label: "Rentals", icon: Wrench },
     { to: "/invoices", label: "Invoices", icon: FileText },
     { to: "/customers", label: "Customers", icon: Users },
     { to: "/site-content", label: "Site Content", icon: ImageIcon },
@@ -38,8 +39,8 @@ function AppLayout() {
 
   return (
     <div className="min-h-screen bg-secondary/30">
-      <div className="container-x grid gap-6 py-8 lg:grid-cols-[240px_1fr]">
-        <aside className="rounded-2xl border border-border bg-card p-4 shadow-soft lg:sticky lg:top-20 lg:h-[calc(100vh-7rem)]">
+      <div className="container-x grid gap-6 py-6 lg:grid-cols-[220px_1fr] lg:py-8">
+        <aside className="rounded-2xl border border-border bg-card p-4 shadow-soft lg:sticky lg:top-20 lg:h-[calc(100vh-7rem)] lg:overflow-y-auto">
           <Link to="/" className="flex items-center gap-2 px-2 py-1 font-display font-bold">
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-hero text-primary-foreground"><Flame className="h-4 w-4" /></span>
             AEL Portal

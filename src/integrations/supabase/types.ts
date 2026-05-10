@@ -19,6 +19,7 @@ export type Database = {
           channel: string
           company: string | null
           created_at: string
+          customer_user_id: string | null
           email: string
           end_date: string | null
           equipment: string
@@ -35,6 +36,7 @@ export type Database = {
           channel?: string
           company?: string | null
           created_at?: string
+          customer_user_id?: string | null
           email: string
           end_date?: string | null
           equipment: string
@@ -51,6 +53,7 @@ export type Database = {
           channel?: string
           company?: string | null
           created_at?: string
+          customer_user_id?: string | null
           email?: string
           end_date?: string | null
           equipment?: string
@@ -211,6 +214,78 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      rentals: {
+        Row: {
+          active: boolean
+          category: string
+          created_at: string
+          day_rate: number
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          position: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          day_rate?: number
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          position?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          day_rate?: number
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          position?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       site_images: {
         Row: {

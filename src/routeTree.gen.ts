@@ -13,6 +13,7 @@ import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RentalsRouteImport } from './routes/rentals'
 import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as PortalRouteImport } from './routes/portal'
 import { Route as HsesRouteImport } from './routes/hses'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ClientsRouteImport } from './routes/clients'
@@ -22,6 +23,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppSiteContentRouteImport } from './routes/_app/site-content'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
+import { Route as AppManageRentalsRouteImport } from './routes/_app/manage-rentals'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppCustomersRouteImport } from './routes/_app/customers'
 import { Route as AppBookingsRouteImport } from './routes/_app/bookings'
@@ -47,6 +49,11 @@ const RentalsRoute = RentalsRouteImport.update({
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortalRoute = PortalRouteImport.update({
+  id: '/portal',
+  path: '/portal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HsesRoute = HsesRouteImport.update({
@@ -93,6 +100,11 @@ const AppSettingsRoute = AppSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AppRoute,
 } as any)
+const AppManageRentalsRoute = AppManageRentalsRouteImport.update({
+  id: '/manage-rentals',
+  path: '/manage-rentals',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDashboardRoute = AppDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -131,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/clients': typeof ClientsRoute
   '/contact': typeof ContactRoute
   '/hses': typeof HsesRoute
+  '/portal': typeof PortalRoute
   '/projects': typeof ProjectsRoute
   '/rentals': typeof RentalsRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -138,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/bookings': typeof AppBookingsRoute
   '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
+  '/manage-rentals': typeof AppManageRentalsRoute
   '/settings': typeof AppSettingsRoute
   '/site-content': typeof AppSiteContentRoute
   '/invoices/$id': typeof AppInvoicesIdRoute
@@ -151,6 +165,7 @@ export interface FileRoutesByTo {
   '/clients': typeof ClientsRoute
   '/contact': typeof ContactRoute
   '/hses': typeof HsesRoute
+  '/portal': typeof PortalRoute
   '/projects': typeof ProjectsRoute
   '/rentals': typeof RentalsRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -158,6 +173,7 @@ export interface FileRoutesByTo {
   '/bookings': typeof AppBookingsRoute
   '/customers': typeof AppCustomersRoute
   '/dashboard': typeof AppDashboardRoute
+  '/manage-rentals': typeof AppManageRentalsRoute
   '/settings': typeof AppSettingsRoute
   '/site-content': typeof AppSiteContentRoute
   '/invoices/$id': typeof AppInvoicesIdRoute
@@ -173,6 +189,7 @@ export interface FileRoutesById {
   '/clients': typeof ClientsRoute
   '/contact': typeof ContactRoute
   '/hses': typeof HsesRoute
+  '/portal': typeof PortalRoute
   '/projects': typeof ProjectsRoute
   '/rentals': typeof RentalsRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -180,6 +197,7 @@ export interface FileRoutesById {
   '/_app/bookings': typeof AppBookingsRoute
   '/_app/customers': typeof AppCustomersRoute
   '/_app/dashboard': typeof AppDashboardRoute
+  '/_app/manage-rentals': typeof AppManageRentalsRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_app/site-content': typeof AppSiteContentRoute
   '/_app/invoices/$id': typeof AppInvoicesIdRoute
@@ -195,6 +213,7 @@ export interface FileRouteTypes {
     | '/clients'
     | '/contact'
     | '/hses'
+    | '/portal'
     | '/projects'
     | '/rentals'
     | '/reset-password'
@@ -202,6 +221,7 @@ export interface FileRouteTypes {
     | '/bookings'
     | '/customers'
     | '/dashboard'
+    | '/manage-rentals'
     | '/settings'
     | '/site-content'
     | '/invoices/$id'
@@ -215,6 +235,7 @@ export interface FileRouteTypes {
     | '/clients'
     | '/contact'
     | '/hses'
+    | '/portal'
     | '/projects'
     | '/rentals'
     | '/reset-password'
@@ -222,6 +243,7 @@ export interface FileRouteTypes {
     | '/bookings'
     | '/customers'
     | '/dashboard'
+    | '/manage-rentals'
     | '/settings'
     | '/site-content'
     | '/invoices/$id'
@@ -236,6 +258,7 @@ export interface FileRouteTypes {
     | '/clients'
     | '/contact'
     | '/hses'
+    | '/portal'
     | '/projects'
     | '/rentals'
     | '/reset-password'
@@ -243,6 +266,7 @@ export interface FileRouteTypes {
     | '/_app/bookings'
     | '/_app/customers'
     | '/_app/dashboard'
+    | '/_app/manage-rentals'
     | '/_app/settings'
     | '/_app/site-content'
     | '/_app/invoices/$id'
@@ -258,6 +282,7 @@ export interface RootRouteChildren {
   ClientsRoute: typeof ClientsRoute
   ContactRoute: typeof ContactRoute
   HsesRoute: typeof HsesRoute
+  PortalRoute: typeof PortalRoute
   ProjectsRoute: typeof ProjectsRoute
   RentalsRoute: typeof RentalsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -292,6 +317,13 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portal': {
+      id: '/portal'
+      path: '/portal'
+      fullPath: '/portal'
+      preLoaderRoute: typeof PortalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/hses': {
@@ -357,6 +389,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/manage-rentals': {
+      id: '/_app/manage-rentals'
+      path: '/manage-rentals'
+      fullPath: '/manage-rentals'
+      preLoaderRoute: typeof AppManageRentalsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/dashboard': {
       id: '/_app/dashboard'
       path: '/dashboard'
@@ -406,6 +445,7 @@ interface AppRouteChildren {
   AppBookingsRoute: typeof AppBookingsRoute
   AppCustomersRoute: typeof AppCustomersRoute
   AppDashboardRoute: typeof AppDashboardRoute
+  AppManageRentalsRoute: typeof AppManageRentalsRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppSiteContentRoute: typeof AppSiteContentRoute
   AppInvoicesIdRoute: typeof AppInvoicesIdRoute
@@ -417,6 +457,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppBookingsRoute: AppBookingsRoute,
   AppCustomersRoute: AppCustomersRoute,
   AppDashboardRoute: AppDashboardRoute,
+  AppManageRentalsRoute: AppManageRentalsRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppSiteContentRoute: AppSiteContentRoute,
   AppInvoicesIdRoute: AppInvoicesIdRoute,
@@ -434,6 +475,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClientsRoute: ClientsRoute,
   ContactRoute: ContactRoute,
   HsesRoute: HsesRoute,
+  PortalRoute: PortalRoute,
   ProjectsRoute: ProjectsRoute,
   RentalsRoute: RentalsRoute,
   ResetPasswordRoute: ResetPasswordRoute,

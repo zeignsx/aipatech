@@ -50,7 +50,7 @@ export function SiteHeader() {
         <div className="hidden lg:block">
           <span className="mr-2 inline-block align-middle"><ThemeToggle /></span>
           <Link
-            to="/dashboard"
+            to="/portal"
             className="mr-2 inline-flex items-center rounded-full border border-border px-4 py-2 text-sm font-semibold text-foreground hover:bg-muted"
           >
             Portal
@@ -77,7 +77,7 @@ export function SiteHeader() {
 
       {open && (
         <div className="border-t border-border/60 bg-background lg:hidden">
-          <div className="container-x flex flex-col py-3">
+          <div className="container-x flex flex-col gap-1 py-3">
             {NAV.map((n) => (
               <Link
                 key={n.to}
@@ -88,6 +88,22 @@ export function SiteHeader() {
                 {n.label}
               </Link>
             ))}
+            <div className="mt-3 grid grid-cols-2 gap-2 border-t border-border/60 pt-3">
+              <Link
+                to="/portal"
+                onClick={() => setOpen(false)}
+                className="inline-flex items-center justify-center rounded-full border border-border px-4 py-2 text-sm font-semibold hover:bg-muted"
+              >
+                Portal
+              </Link>
+              <Link
+                to="/contact"
+                onClick={() => setOpen(false)}
+                className="inline-flex items-center justify-center rounded-full bg-gradient-hero px-4 py-2 text-sm font-semibold text-primary-foreground shadow-soft"
+              >
+                Get a Quote
+              </Link>
+            </div>
           </div>
         </div>
       )}
