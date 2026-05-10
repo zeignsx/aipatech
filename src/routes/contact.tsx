@@ -13,8 +13,32 @@ export const Route = createFileRoute("/contact")({
   component: Contact,
 });
 
+type Status = "idle" | "sending" | "sent" | "error";
+
 function Contact() {
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setStatus("sending");
+    const form = e.currentTarget;
+    try {
+      const res = await fetch("/__forms.html", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(new FormData(form) as unknown as Record<string, string>).toString(),
+      });
+      if (res.ok) {
+        setStatus("sent");
+        form.reset();
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  }
+
   return (
     <>
       <PageHero eyebrow="Contact" title="Let's talk about your next project." sub="Our engineers respond within one business day." />
@@ -42,9 +66,19 @@ function Contact() {
         </div>
 
         <form
-          onSubmit={(e) => { e.preventDefault(); setSent(true); }}
+          name="contact"
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          onSubmit={handleSubmit}
           className="rounded-2xl border border-border bg-card p-8 shadow-card"
         >
+          <input type="hidden" name="form-name" value="contact" />
+          {/* Honeypot — hidden from real users, catches bots */}
+          <p className="hidden">
+            <label>Don't fill this out: <input name="bot-field" /></label>
+          </p>
+
           <h3 className="text-xl font-bold">Send us a message</h3>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <Field label="Full name" name="name" />
@@ -54,13 +88,22 @@ function Contact() {
           </div>
           <Field label="Subject" name="subject" className="mt-4" />
           <div className="mt-4">
-            <label className="text-sm font-medium">Message</label>
-            <textarea required maxLength={1000} rows={5} className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring" />
+            <label className="text-sm font-medium" htmlFor="message">Message</label>
+            <textarea id="message" name="message" required maxLength={1000} rows={5} className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring" />
           </div>
-          <button className="mt-6 inline-flex items-center justify-center rounded-full bg-gradient-hero px-6 py-3 font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-[1.02]">
-            Send message
+          <button
+            type="submit"
+            disabled={status === "sending" || status === "sent"}
+            className="mt-6 inline-flex items-center justify-center rounded-full bg-gradient-hero px-6 py-3 font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+          >
+            {status === "sending" ? "Sending…" : status === "sent" ? "Message sent!" : "Send message"}
           </button>
-          {sent && <p className="mt-4 text-sm text-emerald">Thanks — we'll be in touch shortly.</p>}
+          {status === "sent" && (
+            <p className="mt-4 text-sm text-emerald">Thanks — we'll be in touch shortly.</p>
+          )}
+          {status === "error" && (
+            <p className="mt-4 text-sm text-destructive">Something went wrong. Please try again or email us directly.</p>
+          )}
         </form>
       </section>
     </>
