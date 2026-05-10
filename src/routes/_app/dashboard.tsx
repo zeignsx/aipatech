@@ -37,7 +37,7 @@ function Dashboard() {
     total: invs.reduce((s, i) => s + Number(i.total), 0),
     paid: invs.filter(i => i.status === "paid").reduce((s, i) => s + Number(i.total), 0),
     pending: invs.filter(i => i.status === "sent" || i.status === "overdue").reduce((s, i) => s + Number(i.total), 0),
-    newBookings: bookings.filter(b => b.status === "new").length,
+    newBookings: bookings.filter(b => b.status === "pending").length,
   }), [invs, bookings]);
 
   const fmt = (n: number) => n.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
