@@ -48,9 +48,11 @@ function Rentals() {
       // Open external channel pre-filled with the request
       const summary = `Hello AIPATECH Energy,%0A%0AI'd like a rental quote.%0AReference: ${ref}%0AEquipment: ${encodeURIComponent(pick)}%0AName: ${encodeURIComponent(form.full_name)}%0ACompany: ${encodeURIComponent(form.company)}%0APeriod: ${form.start_date || "?"} → ${form.end_date || "?"}%0A%0A${encodeURIComponent(form.message || "")}`;
       if (channel === "whatsapp") {
-        window.open(`https://wa.me/2348000000000?text=${summary}`, "_blank");
+        window.open(`https://wa.me/2348061306621?text=${summary}`, "_blank");
       } else {
-        window.open(`mailto:rentals@aipatechenergy.com?subject=Rental%20Request%20${ref}&body=${summary}`);
+        // Open Gmail compose in a new tab; fall back to mailto if unavailable
+        const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=rentals@aipatechenergy.com&su=Rental%20Request%20${ref}&body=${summary}`;
+        window.open(gmail, "_blank");
       }
       setDone({ ref });
     } catch (e:any) { setErr(e.message ?? "Could not submit."); }

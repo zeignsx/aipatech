@@ -134,8 +134,8 @@ function Bookings() {
                 ) : (
                   <button disabled={busy===b.id} onClick={()=>generateInvoice(b)} className="inline-flex items-center gap-1 rounded-full bg-gradient-gold px-3 py-1.5 text-xs font-semibold text-gold-foreground disabled:opacity-60"><FileText className="h-3.5 w-3.5"/> {busy===b.id?"Generating…":"Generate invoice"}</button>
                 )}
-                <a href={`mailto:${b.email}?subject=Re: Your AEL rental request AEL-${b.id.slice(0,8).toUpperCase()}`} className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted"><Mail className="h-3.5 w-3.5"/> Reply</a>
-                {b.phone && <a target="_blank" rel="noopener" href={`https://wa.me/${b.phone.replace(/[^0-9]/g,"")}`} className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted"><MessageCircle className="h-3.5 w-3.5"/> WhatsApp</a>}
+                <a target="_blank" rel="noopener" href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(b.email)}&su=${encodeURIComponent(`Re: Your AEL rental request AEL-${b.id.slice(0,8).toUpperCase()}`)}`} className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted"><Mail className="h-3.5 w-3.5"/> Gmail</a>
+                <a target="_blank" rel="noopener" href={`https://wa.me/2348061306621?text=${encodeURIComponent(`Hello ${b.full_name}, regarding your AEL rental request AEL-${b.id.slice(0,8).toUpperCase()} for ${b.equipment}.`)}`} className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs font-semibold hover:bg-muted"><MessageCircle className="h-3.5 w-3.5"/> WhatsApp</a>
                 <select value={b.status} onChange={(e)=>setStatus(b.id, e.target.value)} className="rounded-full border border-border bg-card px-3 py-1.5 text-xs">
                   {STATUSES.map(s=><option key={s} value={s}>{s}</option>)}
                 </select>
