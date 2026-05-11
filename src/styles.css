@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
-@source "../src";
 @import "tw-animate-css";
+
+@source "../src";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -46,7 +47,7 @@
   --card-foreground: oklch(0.18 0.04 250);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.18 0.04 250);
-  --primary: oklch(0.32 0.13 255);              /* deep blue */
+  --primary: oklch(0.32 0.13 255);
   --primary-foreground: oklch(0.99 0.005 250);
   --secondary: oklch(0.96 0.01 250);
   --secondary-foreground: oklch(0.22 0.06 255);
@@ -54,16 +55,15 @@
   --muted-foreground: oklch(0.5 0.03 250);
   --accent: oklch(0.95 0.04 165);
   --accent-foreground: oklch(0.28 0.13 165);
-  --emerald: oklch(0.62 0.16 162);              /* emerald green */
+  --emerald: oklch(0.62 0.16 162);
   --emerald-foreground: oklch(0.99 0.01 160);
-  --gold: oklch(0.78 0.16 75);                  /* gold/orange */
+  --gold: oklch(0.78 0.16 75);
   --gold-foreground: oklch(0.22 0.08 70);
   --destructive: oklch(0.6 0.23 27);
   --destructive-foreground: oklch(0.99 0.005 250);
   --border: oklch(0.92 0.01 250);
   --input: oklch(0.92 0.01 250);
   --ring: oklch(0.55 0.13 255);
-
   --gradient-hero: linear-gradient(135deg, oklch(0.28 0.13 255) 0%, oklch(0.42 0.14 230) 50%, oklch(0.62 0.16 162) 100%);
   --gradient-gold: linear-gradient(135deg, oklch(0.78 0.16 75), oklch(0.7 0.18 55));
   --gradient-emerald: linear-gradient(135deg, oklch(0.62 0.16 162), oklch(0.45 0.13 200));
