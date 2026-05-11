@@ -1,5 +1,4 @@
-@import "tailwindcss" source(none);
-@source "../src";
+@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -46,7 +45,7 @@
   --card-foreground: oklch(0.18 0.04 250);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.18 0.04 250);
-  --primary: oklch(0.32 0.13 255);              /* deep blue */
+  --primary: oklch(0.32 0.13 255);
   --primary-foreground: oklch(0.99 0.005 250);
   --secondary: oklch(0.96 0.01 250);
   --secondary-foreground: oklch(0.22 0.06 255);
@@ -54,16 +53,15 @@
   --muted-foreground: oklch(0.5 0.03 250);
   --accent: oklch(0.95 0.04 165);
   --accent-foreground: oklch(0.28 0.13 165);
-  --emerald: oklch(0.62 0.16 162);              /* emerald green */
+  --emerald: oklch(0.62 0.16 162);
   --emerald-foreground: oklch(0.99 0.01 160);
-  --gold: oklch(0.78 0.16 75);                  /* gold/orange */
+  --gold: oklch(0.78 0.16 75);
   --gold-foreground: oklch(0.22 0.08 70);
   --destructive: oklch(0.6 0.23 27);
   --destructive-foreground: oklch(0.99 0.005 250);
   --border: oklch(0.92 0.01 250);
   --input: oklch(0.92 0.01 250);
   --ring: oklch(0.55 0.13 255);
-
   --gradient-hero: linear-gradient(135deg, oklch(0.28 0.13 255) 0%, oklch(0.42 0.14 230) 50%, oklch(0.62 0.16 162) 100%);
   --gradient-gold: linear-gradient(135deg, oklch(0.78 0.16 75), oklch(0.7 0.18 55));
   --gradient-emerald: linear-gradient(135deg, oklch(0.62 0.16 162), oklch(0.45 0.13 200));
@@ -97,25 +95,66 @@
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
+  * {
+    border-color: var(--color-border);
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4, h5 { font-family: var(--font-display); letter-spacing: -0.02em; }
+  h1, h2, h3, h4, h5 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
 }
 
 @layer utilities {
-  .bg-gradient-hero { background-image: var(--gradient-hero); }
-  .bg-gradient-gold { background-image: var(--gradient-gold); }
-  .bg-gradient-emerald { background-image: var(--gradient-emerald); }
-  .shadow-soft { box-shadow: var(--shadow-soft); }
-  .shadow-card { box-shadow: var(--shadow-card); }
-  .shadow-glow { box-shadow: var(--shadow-glow); }
-  .text-gradient { background: var(--gradient-hero); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .container-x { @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8; }
+  .bg-gradient-hero {
+    background-image: var(--gradient-hero);
+  }
+  .bg-gradient-gold {
+    background-image: var(--gradient-gold);
+  }
+  .bg-gradient-emerald {
+    background-image: var(--gradient-emerald);
+  }
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  .text-gradient {
+    background: var(--gradient-hero);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .container-x {
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 80rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  @media (min-width: 640px) {
+    .container-x {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .container-x {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
   .glass {
     background: color-mix(in oklab, var(--card) 55%, transparent);
     backdrop-filter: blur(18px) saturate(160%);
@@ -137,16 +176,32 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
 }
+
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
-.animate-float { animation: float 6s ease-in-out infinite; }
 
 @keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-33.3333%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.3333%);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
 }
