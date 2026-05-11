@@ -6,10 +6,23 @@
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-// Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
-// @cloudflare/vite-plugin builds from this — wrangler.jsonc main alone is insufficient.
-export default defineConfig({
-  tanstackStart: {
-    server: { entry: "server" },
-  },
-});
+// On Netlify, build as a pure client-side SPA so dist/client/index.html is generated
+// (the Cloudflare Workers SSR build embeds the HTML inside the worker bundle instead,
+// causing the Netlify SPA fallback to fail with a 404).
+// For Cloudflare Workers deployment, run vite build without NETLIFY=true set.
+const isNetlify = !!process.env.NETLIFY;
+
+export default defineConfig(
+  isNetlify
+    ? {
+        // SPA build: no Cloudflare plugin, no server entry → dist/client/index.html is generated
+        cloudflare: false,
+        tanstackStart: {},
+      }
+    : {
+        // Cloudflare Workers SSR build
+        tanstackStart: {
+          server: { entry: "server" },
+        },
+      },
+);
