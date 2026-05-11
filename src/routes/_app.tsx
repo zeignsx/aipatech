@@ -39,13 +39,13 @@ function AppLayout() {
 
   return (
     <div className="min-h-screen bg-secondary/30">
-      <div className="container-x grid gap-6 py-6 lg:grid-cols-[220px_1fr] lg:py-8">
+      <div className="container-x grid gap-6 py-6 lg:grid-cols-[240px_1fr] lg:py-8">
         <aside className="rounded-2xl border border-border bg-card p-4 shadow-soft lg:sticky lg:top-20 lg:h-[calc(100vh-7rem)] lg:overflow-y-auto">
           <Link to="/" className="flex items-center gap-2 px-2 py-1 font-display font-bold">
             <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-hero text-primary-foreground"><Flame className="h-4 w-4" /></span>
             AEL Portal
           </Link>
-          <nav className="mt-6 space-y-1">
+          <nav className="mt-6 grid grid-cols-2 gap-1 lg:block lg:space-y-1">
             {NAV.map((n) => {
               const active = path.startsWith(n.to);
               return (

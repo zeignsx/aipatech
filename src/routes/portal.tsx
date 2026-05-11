@@ -78,16 +78,16 @@ function PortalPage() {
       <main className="min-h-[calc(100vh-4rem)] bg-secondary/30 py-8">
         <div className="container-x space-y-6">
           {/* Header */}
-          <div className="overflow-hidden rounded-3xl bg-gradient-hero p-6 text-primary-foreground shadow-card sm:p-8">
+          <div className="overflow-hidden rounded-3xl bg-gradient-hero p-5 text-primary-foreground shadow-card sm:p-8">
             <div className="flex flex-wrap items-end justify-between gap-4">
-              <div>
+              <div className="min-w-0">
                 <div className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur"><Sparkles className="h-3 w-3"/> Customer portal</div>
-                <h1 className="mt-3 text-3xl font-bold sm:text-4xl">Welcome back</h1>
-                <p className="mt-1 text-sm opacity-90">{user.email}</p>
+                <h1 className="mt-3 text-2xl font-bold sm:text-4xl">Welcome back</h1>
+                <p className="mt-1 truncate text-sm opacity-90">{user.email}</p>
               </div>
-              <div className="flex gap-2">
-                <Link to="/rentals" className="rounded-full bg-white/15 px-4 py-2 text-sm font-semibold backdrop-blur hover:bg-white/25">+ New booking</Link>
-                <button onClick={signOut} className="inline-flex items-center gap-1 rounded-full border border-white/30 px-4 py-2 text-sm font-semibold hover:bg-white/10"><LogOut className="h-4 w-4"/> Sign out</button>
+              <div className="flex flex-wrap gap-2">
+                <Link to="/rentals" className="rounded-full bg-white/15 px-3 py-2 text-xs font-semibold backdrop-blur hover:bg-white/25 sm:px-4 sm:text-sm">+ New booking</Link>
+                <button onClick={signOut} className="inline-flex items-center gap-1 rounded-full border border-white/30 px-3 py-2 text-xs font-semibold hover:bg-white/10 sm:px-4 sm:text-sm"><LogOut className="h-4 w-4"/> Sign out</button>
               </div>
             </div>
           </div>
@@ -110,18 +110,20 @@ function PortalPage() {
             ))}
           </div>
 
-          {/* Tabs */}
-          <div className="flex gap-1 rounded-full border border-border bg-card p-1 text-sm font-semibold w-fit">
+          {/* Tabs — scrollable on mobile */}
+          <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+            <div className="inline-flex w-max gap-1 rounded-full border border-border bg-card p-1 text-xs font-semibold sm:text-sm">
             {[
               { k: "overview", l: "Overview" },
               { k: "bookings", l: `Bookings (${bookings.length})` },
               { k: "notifications", l: `Notifications${unread>0?` · ${unread}`:""}` },
             ].map(t => (
               <button key={t.k} onClick={()=>setTab(t.k as any)}
-                className={`rounded-full px-4 py-2 ${tab===t.k?"bg-gradient-hero text-primary-foreground shadow-soft":"text-muted-foreground"}`}>
+                className={`whitespace-nowrap rounded-full px-3 py-2 sm:px-4 ${tab===t.k?"bg-gradient-hero text-primary-foreground shadow-soft":"text-muted-foreground"}`}>
                 {t.l}
               </button>
             ))}
+            </div>
           </div>
 
           {tab === "overview" && (
