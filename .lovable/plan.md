@@ -1,61 +1,46 @@
-# Build Plan — Auth, Admin, Image CMS & Dashboard
+## Goal
+Polish the entire site with a glassmorphism design system, harden security, separate admin vs customer login flows, expand rentals, and verify every route works on both Lovable preview and Netlify.
 
-## 1. Login credentials (provided now, no rebuild needed)
-- **Email:** `admin@ael.com`
-- **Password:** `Ael2022`
-- Already provisioned with `admin` role in `user_roles`. I will re-seed the account if missing so login is guaranteed to work on first try.
+## 1. Design system overhaul (glassmorphism)
+- Refresh `src/styles.css`: richer gradient tokens, deeper glass utilities (`glass`, `glass-strong`, `glass-dark` already exist — extend with `glass-card`, `glass-hero`, animated gradient mesh background, noise texture overlay).
+- Add subtle motion: float, shimmer, gradient-pan keyframes.
+- Replace flat cards across pages with glass surfaces; layer translucent panels over a colorful blurred background.
 
-## 2. Auth page (`/auth`)
-- Add a tabbed Sign In / Sign Up flow with proper buttons:
-  - "Sign in" (primary)
-  - "Create account" (toggles to signup form: full name, email, password, confirm)
-  - "Forgot password?" (sends reset email via `resetPasswordForEmail`)
-- Keep glassy hero side, add "Continue as guest → back to site" link.
-- Show inline validation + toast feedback (sonner).
-- New `/reset-password` route to complete password recovery.
+## 2. Pages to rebuild visually
+- Landing (`/`): glass hero with mesh gradient + floating equipment imagery, glass feature cards, glass testimonials marquee, glass CTA.
+- About / Services / Projects / Clients / HSE-S / Contact: unified glass page-hero with gradient mesh + glass content cards.
+- Rentals (`/rentals`): glass fleet cards with hover tilt, glass booking aside, category filter chips, search bar, sort by price.
+- Auth (`/auth`): glass login card on gradient backdrop; on submit, role-check and route admins to `/dashboard`, regular users to `/portal`.
+- Header/footer: glass sticky header with backdrop blur, refined mobile drawer.
 
-## 3. Admin Dashboard navigation (every route works)
-Sidebar in `_app.tsx` will include and route to:
-- Dashboard (KPIs, charts) — already exists, will enrich
-- Bookings — exists
-- Invoices — exists
-- Customers — exists
-- **Site Content (new)** — image CMS (see §4)
-- **Settings (new)** — profile, password change, theme
-- Sign out
+## 3. Separate admin vs customer dashboards
+- After login: query `has_role(uid,'admin')`. Admins → `/dashboard` (admin shell). Non-admins → `/portal` (customer shell). Block customers from `/dashboard/*` and admins are free to visit `/portal` if needed.
+- Customer portal (`/portal`): glass cards for active bookings, history, notifications, profile, quick re-book CTA.
+- Admin shell (`_app/*`): cleaner sidebar with sectioned nav (Operations, Catalog, Content, Account), top bar with search + notifications.
 
-Each link uses TanStack `<Link>` with active state; admin guard via `has_role('admin')` check on mount → redirect to `/auth` if not admin.
+## 4. Rentals feature expansion
+- Add filters (category, price range), search, sort.
+- Add availability badge, featured flag (new rental column `featured boolean`).
+- Admin manage-rentals: bulk toggle active, drag-free position editor (number input is fine), image upload to `site-images` bucket.
+- Allow rental detail mini-modal with full description before booking.
 
-## 4. Image Management System (CMS for site images)
-**Backend**
-- New storage bucket `site-images` (public read, admin write).
-- New table `public.site_images`:
-  - `key` (unique slug, e.g. `hero`, `rentals_cover`, `about_team`)
-  - `url` (public storage URL)
-  - `alt`, `updated_at`, `updated_by`
-- RLS: anyone can read; only admins insert/update/delete.
-- Seed rows for every replaceable slot used on the public site.
+## 5. Security tightening
+- Run Supabase linter; resolve warnings.
+- Confirm RLS on all tables (already in place per schema).
+- Add migration: `featured` column on rentals; ensure storage bucket policies remain admin-write/public-read.
+- Keep HIBP password protection on.
 
-**Admin UI** at `/site-content`
-- Grid of image slots. Each card shows current image + "Replace" button.
-- Replace flow: file picker → upload to `site-images/{key}-{timestamp}.{ext}` → update row → live preview.
-- Optional alt-text editor + "Reset to default".
+## 6. Netlify + preview compatibility
+- Verify `netlify.toml` (publish=`dist/client` for TanStack Start build output) and `_redirects`.
+- Ensure no server-only imports leak to client; routes are file-based; no hash routing.
+- Smoke-test all routes: `/`, `/about`, `/services`, `/projects`, `/clients`, `/hses`, `/contact`, `/rentals`, `/auth`, `/reset-password`, `/portal`, `/dashboard`, `/bookings`, `/manage-rentals`, `/invoices`, `/invoices/new`, `/customers`, `/site-content`, `/settings`.
 
-**Public site integration**
-- New hook `useSiteImage(key, fallback)` that reads from `site_images` (with fallback to bundled asset so SSR & first paint never break).
-- Wire hero, rentals fleet, about, etc. through the hook so admin edits propagate immediately.
+## Technical details
+- TanStack Start file-based routes; do not edit `routeTree.gen.ts`.
+- Tailwind v4 tokens in `src/styles.css` only.
+- Use `useIsAdmin` hook for role gating; add redirect logic in `auth.tsx` post-login and a guard in `_app.tsx` that bounces non-admins to `/portal`.
+- All design tokens via CSS variables — no hard-coded colors in components.
 
-## 5. Enriched user/admin dashboard
-- KPI strip: Revenue (YTD), Outstanding, Bookings (30d), Active customers.
-- Revenue 6-mo bar chart (existing) + invoice status donut.
-- Recent activity feed (latest 8 bookings/invoices, realtime).
-- Quick actions: New invoice, New customer, Open bookings inbox.
-- Outstanding invoices table (top 5 overdue) with one-click "Mark paid".
-
-## Technical notes
-- Migration creates `site_images` table, `site-images` bucket, RLS policies, and seeds default keys.
-- Admin guard implemented via a small `useIsAdmin()` hook that calls `has_role` RPC; redirects unauthorized users.
-- All new UI uses semantic tokens from `src/styles.css` (no raw colors).
-- No edits to auto-generated files (`client.ts`, `types.ts`, `routeTree.gen.ts`).
-
-After approval I'll execute migration → seed → code in one pass.
+## Out of scope
+- New backend integrations (email/SMS providers) beyond existing WhatsApp/Gmail handoff.
+- Payment processing.
