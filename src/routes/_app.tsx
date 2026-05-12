@@ -13,17 +13,19 @@ function AppLayout() {
   const [email, setEmail] = useState<string>("");
   const path = useRouterState({ select: (s) => s.location.pathname });
 
+  const guard = async (session: any) => {
+    if (!session) { nav({ to: "/auth" }); return; }
+    const { data, error } = await supabase.rpc("has_role", { _user_id: session.user.id, _role: "admin" });
+    if (error || !data) { nav({ to: "/portal" }); return; }
+    setEmail(session.user.email ?? "");
+    setReady(true);
+  };
+
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      if (!session) nav({ to: "/auth" });
-      else { setEmail(session.user.email ?? ""); setReady(true); }
-    });
-    supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) nav({ to: "/auth" });
-      else { setEmail(data.session.user.email ?? ""); setReady(true); }
-    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => { guard(session); });
+    supabase.auth.getSession().then(({ data }) => { guard(data.session); });
     return () => sub.subscription.unsubscribe();
-  }, [nav]);
+  }, []);
 
   if (!ready) return <div className="grid min-h-screen place-items-center text-muted-foreground">Loading…</div>;
 
