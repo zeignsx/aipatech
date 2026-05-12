@@ -12,9 +12,10 @@ export const Route = createFileRoute("/_app/manage-rentals")({
 type Rental = {
   id: string; name: string; category: string; description: string | null;
   image_url: string | null; day_rate: number; active: boolean; position: number;
+  featured: boolean; availability: string;
 };
 
-const empty: Omit<Rental, "id"> = { name: "", category: "General", description: "", image_url: "", day_rate: 0, active: true, position: 0 };
+const empty: Omit<Rental, "id"> = { name: "", category: "General", description: "", image_url: "", day_rate: 0, active: true, position: 0, featured: false, availability: "available" };
 
 function ManageRentals() {
   const { loading, isAdmin } = useIsAdmin();
@@ -67,6 +68,7 @@ function ManageRentals() {
           name: form.name, category: form.category, description: form.description || null,
           image_url: form.image_url || null, day_rate: Number(form.day_rate) || 0,
           active: form.active, position: Number(form.position) || 0,
+          featured: form.featured, availability: form.availability,
         }).eq("id", editing.id);
         if (error) throw error;
         toast.success("Rental updated");
@@ -75,6 +77,7 @@ function ManageRentals() {
           name: form.name, category: form.category, description: form.description || null,
           image_url: form.image_url || null, day_rate: Number(form.day_rate) || 0,
           active: form.active, position: Number(form.position) || (list.length + 1),
+          featured: form.featured, availability: form.availability,
         });
         if (error) throw error;
         toast.success("Rental added");
@@ -134,8 +137,18 @@ function ManageRentals() {
               <Lab label="Description" className="sm:col-span-2">
                 <textarea rows={2} value={form.description ?? ""} onChange={(e)=>setForm({...form,description:e.target.value})} className="i" />
               </Lab>
+              <Lab label="Availability">
+                <select value={form.availability} onChange={(e)=>setForm({...form,availability:e.target.value})} className="i">
+                  <option value="available">Available</option>
+                  <option value="limited">Limited</option>
+                  <option value="unavailable">Unavailable</option>
+                </select>
+              </Lab>
               <label className="flex items-center gap-2 text-sm">
                 <input type="checkbox" checked={form.active} onChange={(e)=>setForm({...form,active:e.target.checked})} /> Active (visible on website)
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={form.featured} onChange={(e)=>setForm({...form,featured:e.target.checked})} /> Featured (highlighted on Rentals page)
               </label>
             </div>
           </div>
