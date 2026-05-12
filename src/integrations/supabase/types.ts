@@ -251,10 +251,12 @@ export type Database = {
       rentals: {
         Row: {
           active: boolean
+          availability: string
           category: string
           created_at: string
           day_rate: number
           description: string | null
+          featured: boolean
           id: string
           image_url: string | null
           name: string
@@ -263,10 +265,12 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          availability?: string
           category?: string
           created_at?: string
           day_rate?: number
           description?: string | null
+          featured?: boolean
           id?: string
           image_url?: string | null
           name: string
@@ -275,10 +279,12 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          availability?: string
           category?: string
           created_at?: string
           day_rate?: number
           description?: string | null
+          featured?: boolean
           id?: string
           image_url?: string | null
           name?: string
