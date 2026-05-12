@@ -14,7 +14,7 @@ type Mode = "signin" | "signup" | "forgot";
 function AuthPage() {
   const nav = useNavigate();
   const [mode, setMode] = useState<Mode>("signin");
-  const [email, setEmail] = useState("admin@ael.com");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [fullName, setFullName] = useState("");
