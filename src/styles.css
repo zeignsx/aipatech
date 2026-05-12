@@ -39,7 +39,7 @@
 
 :root {
   --radius: 0.875rem;
-  --background: oklch(1 0 0);
+  --background: oklch(0.985 0.008 250);
   --foreground: oklch(0.18 0.04 250);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.18 0.04 250);
@@ -47,7 +47,7 @@
   --popover-foreground: oklch(0.18 0.04 250);
   --primary: oklch(0.32 0.13 255);
   --primary-foreground: oklch(0.99 0.005 250);
-  --secondary: oklch(0.96 0.01 250);
+  --secondary: oklch(0.955 0.012 250);
   --secondary-foreground: oklch(0.22 0.06 255);
   --muted: oklch(0.965 0.008 250);
   --muted-foreground: oklch(0.5 0.03 250);
@@ -62,12 +62,17 @@
   --border: oklch(0.92 0.01 250);
   --input: oklch(0.92 0.01 250);
   --ring: oklch(0.55 0.13 255);
-  --gradient-hero: linear-gradient(135deg, oklch(0.28 0.13 255) 0%, oklch(0.42 0.14 230) 50%, oklch(0.62 0.16 162) 100%);
-  --gradient-gold: linear-gradient(135deg, oklch(0.78 0.16 75), oklch(0.7 0.18 55));
+  --gradient-hero: linear-gradient(135deg, oklch(0.28 0.13 255) 0%, oklch(0.42 0.14 230) 45%, oklch(0.62 0.16 162) 100%);
+  --gradient-gold: linear-gradient(135deg, oklch(0.82 0.17 80), oklch(0.68 0.18 55));
   --gradient-emerald: linear-gradient(135deg, oklch(0.62 0.16 162), oklch(0.45 0.13 200));
+  --gradient-mesh: radial-gradient(at 12% 18%, oklch(0.78 0.18 75 / 0.35) 0px, transparent 50%),
+                   radial-gradient(at 88% 12%, oklch(0.55 0.20 255 / 0.32) 0px, transparent 50%),
+                   radial-gradient(at 72% 88%, oklch(0.62 0.16 162 / 0.28) 0px, transparent 50%),
+                   radial-gradient(at 18% 78%, oklch(0.45 0.20 290 / 0.25) 0px, transparent 50%);
   --shadow-soft: 0 4px 20px -8px oklch(0.32 0.13 255 / 0.18);
-  --shadow-card: 0 10px 30px -12px oklch(0.32 0.13 255 / 0.2);
+  --shadow-card: 0 10px 30px -12px oklch(0.32 0.13 255 / 0.22);
   --shadow-glow: 0 20px 60px -20px oklch(0.62 0.16 162 / 0.45);
+  --shadow-glass: 0 8px 32px -4px oklch(0.32 0.13 255 / 0.15), inset 0 1px 0 0 oklch(1 0 0 / 0.6);
 }
 
 .dark {
@@ -103,6 +108,9 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    background-image: var(--gradient-mesh);
+    background-attachment: fixed;
+    background-size: 100% 100%;
   }
   h1, h2, h3, h4, h5 {
     font-family: var(--font-display);
@@ -156,22 +164,45 @@
     }
   }
   .glass {
-    background: color-mix(in oklab, var(--card) 55%, transparent);
-    backdrop-filter: blur(18px) saturate(160%);
-    -webkit-backdrop-filter: blur(18px) saturate(160%);
-    border: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent);
+    background: color-mix(in oklab, var(--card) 60%, transparent);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid color-mix(in oklab, var(--foreground) 10%, transparent);
+    box-shadow: var(--shadow-glass);
   }
   .glass-strong {
-    background: color-mix(in oklab, var(--card) 75%, transparent);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid color-mix(in oklab, var(--foreground) 14%, transparent);
+    background: color-mix(in oklab, var(--card) 80%, transparent);
+    backdrop-filter: blur(28px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    border: 1px solid color-mix(in oklab, var(--foreground) 12%, transparent);
+    box-shadow: var(--shadow-glass);
   }
   .glass-dark {
     background: linear-gradient(135deg, oklch(1 0 0 / 0.12), oklch(1 0 0 / 0.04));
     backdrop-filter: blur(20px) saturate(160%);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
     border: 1px solid oklch(1 0 0 / 0.18);
+  }
+  .glass-card {
+    background: linear-gradient(135deg,
+      color-mix(in oklab, var(--card) 75%, transparent),
+      color-mix(in oklab, var(--card) 55%, transparent));
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid color-mix(in oklab, var(--foreground) 8%, transparent);
+    box-shadow: var(--shadow-glass), 0 1px 0 0 oklch(1 0 0 / 0.4) inset;
+  }
+  .mesh-bg {
+    background-image: var(--gradient-mesh);
+  }
+  .noise::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   }
 }
 
@@ -200,6 +231,16 @@
   100% {
     transform: translateX(-33.3333%);
   }
+}
+
+@keyframes gradient-pan {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-pan 12s ease infinite;
 }
 
 .animate-float {
