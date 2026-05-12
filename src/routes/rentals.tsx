@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/page-hero";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, MessageCircle, CheckCircle2, Calendar, Wrench } from "lucide-react";
+import { Mail, MessageCircle, CheckCircle2, Calendar, Wrench, Search, Sparkles, Filter } from "lucide-react";
 import refinery from "@/assets/ng-refinery.jpg";
 
 export const Route = createFileRoute("/rentals")({
@@ -16,12 +16,23 @@ export const Route = createFileRoute("/rentals")({
 });
 
 function Rentals() {
-  const [FLEET, setFLEET] = useState<{ id: string; n: string; c: string; img: string; day: number; desc?: string|null }[]>([]);
+  type Item = { id: string; n: string; c: string; img: string; day: number; desc?: string|null; featured: boolean; availability: string };
+  const [FLEET, setFLEET] = useState<Item[]>([]);
+  const [q, setQ] = useState("");
+  const [cat, setCat] = useState<string>("All");
+  const [sort, setSort] = useState<"featured"|"price-asc"|"price-desc">("featured");
   useEffect(() => {
     supabase.from("rentals").select("*").eq("active", true).order("position").then(({ data }) => {
-      setFLEET((data ?? []).map((r:any)=>({ id:r.id, n:r.name, c:r.category, img:r.image_url || refinery, day:Number(r.day_rate), desc:r.description })));
+      setFLEET((data ?? []).map((r:any)=>({ id:r.id, n:r.name, c:r.category, img:r.image_url || refinery, day:Number(r.day_rate), desc:r.description, featured: !!r.featured, availability: r.availability || "available" })));
     });
   }, []);
+
+  const categories = ["All", ...Array.from(new Set(FLEET.map(f=>f.c)))];
+  const filtered = FLEET
+    .filter(f => cat === "All" || f.c === cat)
+    .filter(f => !q || f.n.toLowerCase().includes(q.toLowerCase()) || (f.desc||"").toLowerCase().includes(q.toLowerCase()))
+    .sort((a,b)=> sort === "price-asc" ? a.day-b.day : sort === "price-desc" ? b.day-a.day : (Number(b.featured)-Number(a.featured)));
+
   const [pick, setPick] = useState<string>("");
   const [form, setForm] = useState({ full_name: "", company: "", email: "", phone: "", start_date: "", end_date: "", message: "" });
   const [channel, setChannel] = useState<"email"|"whatsapp">("email");
@@ -68,20 +79,54 @@ function Rentals() {
         <div>
           <h2 className="font-display text-2xl font-bold">Available fleet</h2>
           <p className="mt-1 text-sm text-muted-foreground">Tap a unit to add it to your booking. Day rates indicative — final pricing on the invoice.</p>
+
+          {/* Filters */}
+          <div className="mt-5 glass rounded-2xl p-3 space-y-3">
+            <div className="flex items-center gap-2 rounded-xl border border-input bg-background/60 px-3 py-2">
+              <Search className="h-4 w-4 text-muted-foreground" />
+              <input value={q} onChange={(e)=>setQ(e.target.value)} placeholder="Search equipment…" className="w-full bg-transparent text-sm outline-none" />
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex flex-wrap gap-1">
+                {categories.map(c => (
+                  <button key={c} onClick={()=>setCat(c)} className={`rounded-full px-3 py-1 text-xs font-semibold ${cat===c?"bg-gradient-hero text-primary-foreground":"border border-border bg-background/60 text-muted-foreground hover:text-foreground"}`}>{c}</button>
+                ))}
+              </div>
+              <label className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                <Filter className="h-3.5 w-3.5" />
+                <select value={sort} onChange={(e)=>setSort(e.target.value as any)} className="rounded-md border border-input bg-background/60 px-2 py-1 text-xs">
+                  <option value="featured">Featured</option>
+                  <option value="price-asc">Price ↑</option>
+                  <option value="price-desc">Price ↓</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {FLEET.map((f) => {
+            {filtered.map((f) => {
               const active = pick === f.n;
+              const availMeta = f.availability === "unavailable"
+                ? { c: "bg-destructive/15 text-destructive", l: "Unavailable" }
+                : f.availability === "limited"
+                  ? { c: "bg-gold/15 text-gold-foreground", l: "Limited" }
+                  : { c: "bg-emerald/15 text-emerald", l: "Available" };
               return (
                 <button
                   key={f.n}
                   type="button"
-                  onClick={() => setPick(f.n)}
+                  onClick={() => f.availability !== "unavailable" && setPick(f.n)}
+                  disabled={f.availability === "unavailable"}
                   className={`group relative overflow-hidden rounded-2xl border text-left shadow-soft transition-all hover:-translate-y-1 hover:shadow-card ${active ? "border-primary ring-2 ring-primary" : "border-border"}`}
                 >
                   <div className="relative h-36 overflow-hidden">
                     <img src={f.img} alt={f.n} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                     <span className="absolute right-2 top-2 rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur">{f.c}</span>
+                    {f.featured && (
+                      <span className="absolute left-2 bottom-2 inline-flex items-center gap-1 rounded-full bg-gradient-gold px-2 py-0.5 text-[10px] font-semibold text-gold-foreground"><Sparkles className="h-3 w-3"/> Featured</span>
+                    )}
+                    <span className={`absolute right-2 bottom-2 rounded-full px-2 py-0.5 text-[10px] font-semibold backdrop-blur ${availMeta.c}`}>{availMeta.l}</span>
                     {active && (
                       <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground"><CheckCircle2 className="h-3 w-3" /> Selected</span>
                     )}
@@ -97,9 +142,9 @@ function Rentals() {
               );
             })}
           </div>
-          {FLEET.length === 0 && (
+          {filtered.length === 0 && (
             <div className="mt-6 rounded-2xl border border-dashed border-border bg-card p-12 text-center text-sm text-muted-foreground">
-              No equipment available right now. Please check back soon or contact us directly.
+              {FLEET.length === 0 ? "No equipment available right now. Please check back soon." : "No equipment matches your filters."}
             </div>
           )}
         </div>
