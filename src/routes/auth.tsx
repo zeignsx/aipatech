@@ -21,26 +21,34 @@ function AuthPage() {
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const routeForUser = async (userId: string) => {
+    const { data, error } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+    const isAdmin = !error && Boolean(data);
+    nav({ to: isAdmin ? "/dashboard" : "/portal" });
+  };
+
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => { if (data.session) nav({ to: "/dashboard" }); });
-  }, [nav]);
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) routeForUser(data.session.user.id);
+    });
+  }, []);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null); setLoading(true);
     try {
       if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("Welcome back");
-        nav({ to: "/dashboard" });
+        await routeForUser(data.user!.id);
       } else if (mode === "signup") {
         if (password !== confirm) throw new Error("Passwords do not match");
         if (password.length < 6) throw new Error("Password must be at least 6 characters");
         const { error } = await supabase.auth.signUp({
           email, password,
           options: {
-            emailRedirectTo: `${window.location.origin}/dashboard`,
+            emailRedirectTo: `${window.location.origin}/portal`,
             data: { full_name: fullName },
           },
         });
